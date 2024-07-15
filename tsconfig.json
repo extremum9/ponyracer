@@ -29,5 +29,6 @@
     "extendedDiagnostics": {
       "defaultCategory": "error"
     }
-  }
+  },
+  "exclude": ["cypress.config.ts"]
 }
