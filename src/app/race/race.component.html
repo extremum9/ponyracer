@@ -2,7 +2,9 @@
   <h2>{{ raceModel.name }}</h2>
   <ul>
     @for (pony of raceModel.ponies; track pony.id) {
-      <li>{{ pony.name }}</li>
+      <li>
+        <pr-pony [ponyModel]="pony" />
+      </li>
     }
   </ul>
 </div>
