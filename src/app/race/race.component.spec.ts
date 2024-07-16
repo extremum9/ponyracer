@@ -37,6 +37,9 @@ describe('RaceComponent', () => {
     const raceName = element.querySelector('h2')!;
     expect(raceName).withContext('You need an h2 element for the race name').not.toBeNull();
     expect(raceName.textContent).withContext('The h2 element should contain the race name').toContain('Paris');
+    const startInstant = element.querySelector('p')!;
+    expect(startInstant).withContext('You need an p element for the race start instant').not.toBeNull();
+    expect(startInstant.textContent).withContext('The p element should contain the race start instant').toContain('2/18/24, 8:02 AM');
     const ponies = fixture.debugElement.queryAll(By.directive(PonyComponent));
     expect(ponies).withContext('You should use the PonyComponent in your template to display the ponies').not.toBeNull();
     expect(ponies.length).withContext('You should have five pony components in your template').toBe(5);
