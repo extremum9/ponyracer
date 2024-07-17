@@ -14,6 +14,6 @@ export class RacesComponent {
   public races: RaceModel[] = [];
 
   constructor(private _raceService: RaceService) {
-    this.races = this._raceService.list();
+    this._raceService.list().subscribe(races => (this.races = races));
   }
 }
