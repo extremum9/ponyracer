@@ -1,11 +1,27 @@
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { of } from 'rxjs';
 import { AppComponent } from './app.component';
 import { MenuComponent } from './menu/menu.component';
 import { RacesComponent } from './races/races.component';
+import { RaceService } from './race.service';
+import { RaceModel } from './models/race.model';
 
 describe('AppComponent', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+  let raceService: jasmine.SpyObj<RaceService>;
+
+  beforeEach(() => {
+    raceService = jasmine.createSpyObj<RaceService>('RaceService', ['list']);
+    TestBed.configureTestingModule({
+      providers: [{ provide: RaceService, useValue: raceService }]
+    });
+    raceService.list.and.returnValue(
+      of([
+        { id: 1, name: 'Tokyo', startInstant: '2024-02-18T08:03:00Z' },
+        { id: 2, name: 'Paris', startInstant: '2024-02-18T08:04:00Z' }
+      ] as Array<RaceModel>)
+    );
+  });
 
   it('should have a title', () => {
     const fixture = TestBed.createComponent(AppComponent);
