@@ -11,7 +11,7 @@ import { RaceService } from '../race.service';
   styleUrl: './races.component.css'
 })
 export class RacesComponent {
-  public races: RaceModel[] = [];
+  races: RaceModel[] = [];
 
   constructor(private _raceService: RaceService) {
     this._raceService.list().subscribe(races => (this.races = races));

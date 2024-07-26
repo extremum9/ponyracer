@@ -25,17 +25,16 @@ describe('HomeComponent', () => {
     expect(subtitle.textContent).toContain('Always a pleasure to bet on ponies');
   });
 
-  it('display a link to go the races', () => {
+  it('display a link to go the login', () => {
     const fixture = TestBed.createComponent(HomeComponent);
     const element = fixture.nativeElement as HTMLElement;
 
     fixture.detectChanges();
 
-    const button = element.querySelector('a')!;
-    expect(button).withContext('You should have an `a` element to display the link to the races').not.toBeNull();
-    expect(button.textContent).withContext('The link should have a text').toContain('Races');
-    expect(button.getAttribute('href'))
-      .withContext('The URL of the link is not correct. Maybe you forgot to use `routerLink`?')
-      .toBe('/races');
+    const button = element.querySelector('a[href="/login"]')!;
+    expect(button)
+      .withContext('You should have an `a` element to display the link to the login. Maybe you forgot to use `routerLink`?')
+      .not.toBeNull();
+    expect(button.textContent).withContext('The link should have a text').toContain('Login');
   });
 });
