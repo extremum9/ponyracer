@@ -9,9 +9,9 @@ import { RouterLink } from '@angular/router';
   styleUrl: './menu.component.css'
 })
 export class MenuComponent {
-  public navbarCollapsed = true;
+  navbarCollapsed = true;
 
-  public toggleNavbar(): void {
+  toggleNavbar(): void {
     this.navbarCollapsed = !this.navbarCollapsed;
   }
 }

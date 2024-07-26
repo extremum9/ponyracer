@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="col-md-6 offset-md-3">
+    <h1>Log in</h1>
+    @if (authenticationFailed) {
+      <div class="alert alert-danger">Nope, try again.</div>
+    }
+    <form [formGroup]="userForm" (ngSubmit)="authenticate()">
+      <div class="mb-3">
+        <label for="login" class="form-label">Login</label>
+        <input id="login" type="text" class="form-control" formControlName="login" />
+        @if (loginCtrl.dirty && loginCtrl.hasError('required')) {
+          <div class="invalid-feedback">Login is required</div>
+        }
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input id="password" type="password" class="form-control" formControlName="password" />
+        @if (passwordCtrl.dirty && passwordCtrl.hasError('required')) {
+          <div class="invalid-feedback">Password is required</div>
+        }
+      </div>
+      <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid">Log me in!</button>
+    </form>
+  </div>
+</div>
