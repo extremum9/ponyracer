@@ -29,9 +29,7 @@ export class LoginComponent {
     this.authenticationFailed = false;
     const { login, password } = this.userForm.value;
     this.userService.authenticate(login!, password!).subscribe({
-      next: () => {
-        this.router.navigateByUrl('/');
-      },
+      next: () => this.router.navigateByUrl('/'),
       error: () => (this.authenticationFailed = true)
     });
   }

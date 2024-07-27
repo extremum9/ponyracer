@@ -25,7 +25,7 @@ describe('HomeComponent', () => {
     expect(subtitle.textContent).toContain('Always a pleasure to bet on ponies');
   });
 
-  it('display a link to go the login', () => {
+  it('display a link to go the login and another to register', () => {
     const fixture = TestBed.createComponent(HomeComponent);
     const element = fixture.nativeElement as HTMLElement;
 
@@ -36,5 +36,11 @@ describe('HomeComponent', () => {
       .withContext('You should have an `a` element to display the link to the login. Maybe you forgot to use `routerLink`?')
       .not.toBeNull();
     expect(button.textContent).withContext('The link should have a text').toContain('Login');
+
+    const buttonRegister = element.querySelector('a[href="/register"]')!;
+    expect(buttonRegister)
+      .withContext('You should have an `a` element to display the link to the register page. Maybe you forgot to use `routerLink`?')
+      .not.toBeNull();
+    expect(buttonRegister.textContent).withContext('The link should have a text').toContain('Register');
   });
 });
