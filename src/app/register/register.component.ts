@@ -11,24 +11,24 @@ import { Router } from '@angular/router';
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
-  #fb = inject(NonNullableFormBuilder);
-  registrationFailed = false;
-  loginCtrl = this.#fb.control('', [Validators.required, Validators.minLength(3)]);
-  passwordCtrl = this.#fb.control('', Validators.required);
-  confirmPasswordCtrl = this.#fb.control('', Validators.required);
-  birthYearCtrl = this.#fb.control<number | null>(null, [
+  private fb = inject(NonNullableFormBuilder);
+  public registrationFailed = false;
+  public loginCtrl = this.fb.control('', [Validators.required, Validators.minLength(3)]);
+  public passwordCtrl = this.fb.control('', Validators.required);
+  public confirmPasswordCtrl = this.fb.control('', Validators.required);
+  public birthYearCtrl = this.fb.control<number | null>(null, [
     Validators.required,
     Validators.min(1900),
     Validators.max(new Date().getFullYear())
   ]);
-  passwordGroup = this.#fb.group(
+  public passwordGroup = this.fb.group(
     {
       password: this.passwordCtrl,
       confirmPassword: this.confirmPasswordCtrl
     },
     { validators: RegisterComponent.passwordMatch }
   );
-  userForm = this.#fb.group({
+  public userForm = this.fb.group({
     login: this.loginCtrl,
     passwordForm: this.passwordGroup,
     birthYear: this.birthYearCtrl
@@ -45,7 +45,7 @@ export class RegisterComponent {
     return password !== confirmPassword ? { matchingError: true } : null;
   }
 
-  register(): void {
+  public register(): void {
     this.registrationFailed = false;
     const { login, birthYear } = this.userForm.value;
     const password = this.passwordGroup.value.password;

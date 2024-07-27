@@ -11,21 +11,21 @@ import { Router } from '@angular/router';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  #fb = inject(NonNullableFormBuilder);
-  loginCtrl = this.#fb.control('', Validators.required);
-  passwordCtrl = this.#fb.control('', Validators.required);
-  userForm = this.#fb.group({
+  private fb = inject(NonNullableFormBuilder);
+  public loginCtrl = this.fb.control('', Validators.required);
+  public passwordCtrl = this.fb.control('', Validators.required);
+  public userForm = this.fb.group({
     login: this.loginCtrl,
     password: this.passwordCtrl
   });
-  authenticationFailed = false;
+  public authenticationFailed = false;
 
   constructor(
     private router: Router,
     private userService: UserService
   ) {}
 
-  authenticate(): void {
+  public authenticate(): void {
     this.authenticationFailed = false;
     const { login, password } = this.userForm.value;
     this.userService.authenticate(login!, password!).subscribe({

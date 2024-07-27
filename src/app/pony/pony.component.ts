@@ -12,11 +12,11 @@ export class PonyComponent {
   @Input({ required: true }) ponyModel!: PonyModel;
   @Output() readonly ponyClicked = new EventEmitter<PonyModel>();
 
-  getPonyImageUrl(): string {
+  public getPonyImageUrl(): string {
     return `images/pony-${this.ponyModel.color.toLowerCase()}.gif`;
   }
 
-  clicked(): void {
+  public clicked(): void {
     this.ponyClicked.emit(this.ponyModel);
   }
 }
