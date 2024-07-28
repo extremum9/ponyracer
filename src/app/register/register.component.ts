@@ -2,11 +2,12 @@ import { Component, inject } from '@angular/core';
 import { AbstractControl, NonNullableFormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { UserService } from '../user.service';
 import { Router } from '@angular/router';
+import { BirthYearInputComponent } from '../birth-year-input/birth-year-input.component';
 
 @Component({
   selector: 'pr-register',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, BirthYearInputComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
@@ -16,11 +17,7 @@ export class RegisterComponent {
   public loginCtrl = this.fb.control('', [Validators.required, Validators.minLength(3)]);
   public passwordCtrl = this.fb.control('', Validators.required);
   public confirmPasswordCtrl = this.fb.control('', Validators.required);
-  public birthYearCtrl = this.fb.control<number | null>(null, [
-    Validators.required,
-    Validators.min(1900),
-    Validators.max(new Date().getFullYear())
-  ]);
+  public birthYearCtrl = this.fb.control<number | null>(null, [Validators.required]);
   public passwordGroup = this.fb.group(
     {
       password: this.passwordCtrl,

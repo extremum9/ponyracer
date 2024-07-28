@@ -43,12 +43,12 @@
 
       <div class="mb-3">
         <label for="birth-year" class="form-label">Birth year</label>
-        <input id="birth-year" type="number" class="form-control" formControlName="birthYear" />
+        <pr-birth-year-input inputId="birth-year" formControlName="birthYear" />
         @if (birthYearCtrl.dirty) {
-          @if (birthYearCtrl.hasError('min') || birthYearCtrl.hasError('max')) {
-            <div id="birth-year-invalid-error" class="invalid-feedback">This is not a valid year</div>
-          } @else if (birthYearCtrl.hasError('required')) {
+          @if (birthYearCtrl.hasError('required')) {
             <div id="birth-year-required-error" class="invalid-feedback">Birth year is required</div>
+          } @else if (birthYearCtrl.hasError('invalidYear')) {
+            <div id="birth-year-invalid-error" class="invalid-feedback">This is not a valid year</div>
           }
         }
       </div>
