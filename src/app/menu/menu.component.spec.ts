@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, RouterLink } from '@angular/router';
 import { By } from '@angular/platform-browser';
-import { Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { UserService } from '../user.service';
 import { UserModel } from '../models/user.model';
 import { MenuComponent } from './menu.component';
@@ -11,7 +11,7 @@ describe('MenuComponent', () => {
 
   beforeEach(() => {
     userService = jasmine.createSpyObj<UserService>('UserService', [], {
-      userEvents: new Subject<UserModel>()
+      userEvents: new BehaviorSubject<UserModel | null>(null)
     });
     TestBed.configureTestingModule({
       providers: [provideRouter([]), { provide: UserService, useValue: userService }]
@@ -48,7 +48,13 @@ describe('MenuComponent', () => {
     fixture.detectChanges();
 
     const links = fixture.debugElement.queryAll(By.directive(RouterLink));
-    expect(links.length).withContext('You should have two routerLink: one to the races, one to the home').toBe(2);
+    expect(links.length).withContext('You should have only one routerLink to the home when the user is not logged').toBe(1);
+
+    userService.userEvents.next({ login: 'cedric', money: 2000 } as UserModel);
+    fixture.detectChanges();
+
+    const linksAfterLogin = fixture.debugElement.queryAll(By.directive(RouterLink));
+    expect(linksAfterLogin.length).withContext('You should have two routerLink: one to the races, one to the home').toBe(2);
   });
 
   it('should display the user if logged in', () => {
