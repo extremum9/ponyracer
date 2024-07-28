@@ -10,6 +10,17 @@
           <a class="nav-link" routerLink="/races">Races</a>
         </li>
       </ul>
+      @if (user) {
+        <ul class="navbar-nav">
+          <li class="navbar-text">
+            <span id="current-user" class="me-2">
+              {{ user.login }}
+              <span class="fa fa-star"></span>
+              {{ user.money | number }}
+            </span>
+          </li>
+        </ul>
+      }
     </div>
   </div>
 </nav>
