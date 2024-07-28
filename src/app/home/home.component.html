@@ -3,6 +3,12 @@
 </div>
 
 <div class="text-center">
-  <a class="btn btn-large btn-primary me-2" routerLink="/login">Login</a>
-  <a class="btn btn-large btn-primary" routerLink="/register">Register</a>
+  @if (!user) {
+    <a class="btn btn-large btn-primary me-2" routerLink="/login">Login</a>
+    <a class="btn btn-large btn-primary" routerLink="/register">Register</a>
+  } @else {
+    <div class="text-center">
+      <a class="btn btn-large btn-primary" routerLink="/races">Races</a>
+    </div>
+  }
 </div>
