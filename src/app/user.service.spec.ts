@@ -27,6 +27,9 @@ describe('UserService', () => {
   afterAll(() => http.verify());
 
   it('should authenticate a user', () => {
+    // spy on userEvents
+    spyOn(userService.userEvents, 'next');
+
     let actualUser: UserModel | undefined;
     userService.authenticate('cedric', 'hello').subscribe(fetchedUser => (actualUser = fetchedUser));
 
@@ -35,6 +38,7 @@ describe('UserService', () => {
     req.flush(user);
 
     expect(actualUser).withContext('The observable should return the user').toBe(user);
+    expect(userService.userEvents.next).toHaveBeenCalledWith(user);
   });
 
   it('should register a user', () => {

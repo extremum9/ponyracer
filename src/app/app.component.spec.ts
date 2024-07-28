@@ -1,5 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { MenuComponent } from './menu/menu.component';
@@ -7,7 +9,7 @@ import { MenuComponent } from './menu/menu.component';
 describe('AppComponent', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [provideRouter([])]
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])]
     })
   );
 
