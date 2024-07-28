@@ -52,8 +52,9 @@ describe('Register', () => {
     birthYearInput().type(`${new Date().getFullYear() + 1}`);
     cy.get('#birth-year-invalid-error').should('be.visible').and('contain', 'This is not a valid year');
     birthYearInput().clear();
-    birthYearInput().type('1986');
+    birthYearInput().type('86');
     cy.get('#birth-year-invalid-error').should('not.exist');
+    cy.get('.formatted-year').should('contain', '1986');
 
     cy.get('form > button').click();
     cy.wait('@registerUser');
