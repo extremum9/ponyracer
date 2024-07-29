@@ -21,27 +21,13 @@ import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationError
   ]
 })
 export class BirthYearInputComponent implements ControlValueAccessor, Validator {
-  @Input({ required: true }) inputId!: string;
+  @Input({ required: true })
+  public inputId!: string;
   public value: number | null = null;
   public year: number | null = null;
   public disabled = false;
   public onChange: (value: number | null) => void = () => {};
   public onTouched: () => void = () => {};
-
-  private computeYear(value: number | null): number | null {
-    const lastTwoDigitsOfTheCurrentYear = new Date().getFullYear() % 100;
-    const firstTwoDigitsOfTheCurrentYear = Math.floor(new Date().getFullYear() / 100);
-
-    if (value === null) {
-      return null;
-    } else if (value < 0 || value > 100) {
-      return value;
-    } else if (value > lastTwoDigitsOfTheCurrentYear) {
-      return (firstTwoDigitsOfTheCurrentYear - 1) * 100 + value;
-    } else {
-      return firstTwoDigitsOfTheCurrentYear * 100 + value;
-    }
-  }
 
   public writeValue(value: number | null): void {
     this.value = value;
@@ -79,5 +65,20 @@ export class BirthYearInputComponent implements ControlValueAccessor, Validator 
       return { invalidYear: true };
     }
     return null;
+  }
+
+  private computeYear(value: number | null): number | null {
+    const lastTwoDigitsOfTheCurrentYear = new Date().getFullYear() % 100;
+    const firstTwoDigitsOfTheCurrentYear = Math.floor(new Date().getFullYear() / 100);
+
+    if (value === null) {
+      return null;
+    } else if (value < 0 || value > 100) {
+      return value;
+    } else if (value > lastTwoDigitsOfTheCurrentYear) {
+      return (firstTwoDigitsOfTheCurrentYear - 1) * 100 + value;
+    } else {
+      return firstTwoDigitsOfTheCurrentYear * 100 + value;
+    }
   }
 }

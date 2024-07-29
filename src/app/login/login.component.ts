@@ -11,25 +11,25 @@ import { Router } from '@angular/router';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  private fb = inject(NonNullableFormBuilder);
-  public loginCtrl = this.fb.control('', Validators.required);
-  public passwordCtrl = this.fb.control('', Validators.required);
-  public userForm = this.fb.group({
+  private _fb = inject(NonNullableFormBuilder);
+  public authenticationFailed = false;
+  public loginCtrl = this._fb.control('', Validators.required);
+  public passwordCtrl = this._fb.control('', Validators.required);
+  public userForm = this._fb.group({
     login: this.loginCtrl,
     password: this.passwordCtrl
   });
-  public authenticationFailed = false;
 
   constructor(
-    private router: Router,
-    private userService: UserService
+    private _router: Router,
+    private _userService: UserService
   ) {}
 
   public authenticate(): void {
     this.authenticationFailed = false;
     const { login, password } = this.userForm.value;
-    this.userService.authenticate(login!, password!).subscribe({
-      next: () => this.router.navigateByUrl('/'),
+    this._userService.authenticate(login!, password!).subscribe({
+      next: () => this._router.navigateByUrl('/'),
       error: () => (this.authenticationFailed = true)
     });
   }

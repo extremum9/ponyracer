@@ -12,28 +12,30 @@ import { BirthYearInputComponent } from '../birth-year-input/birth-year-input.co
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
-  private fb = inject(NonNullableFormBuilder);
+  private _fb = inject(NonNullableFormBuilder);
   public registrationFailed = false;
-  public loginCtrl = this.fb.control('', [Validators.required, Validators.minLength(3)]);
-  public passwordCtrl = this.fb.control('', Validators.required);
-  public confirmPasswordCtrl = this.fb.control('', Validators.required);
-  public birthYearCtrl = this.fb.control<number | null>(null, [Validators.required]);
-  public passwordGroup = this.fb.group(
+  public loginCtrl = this._fb.control('', [Validators.required, Validators.minLength(3)]);
+  public passwordCtrl = this._fb.control('', Validators.required);
+  public confirmPasswordCtrl = this._fb.control('', Validators.required);
+  public birthYearCtrl = this._fb.control<number | null>(null, [Validators.required]);
+
+  public passwordGroup = this._fb.group(
     {
       password: this.passwordCtrl,
       confirmPassword: this.confirmPasswordCtrl
     },
     { validators: RegisterComponent.passwordMatch }
   );
-  public userForm = this.fb.group({
+
+  public userForm = this._fb.group({
     login: this.loginCtrl,
     passwordForm: this.passwordGroup,
     birthYear: this.birthYearCtrl
   });
 
   constructor(
-    private router: Router,
-    private userService: UserService
+    private _router: Router,
+    private _userService: UserService
   ) {}
 
   static passwordMatch(control: AbstractControl<{ password: string; confirmPassword: string }>): ValidationErrors | null {
@@ -46,8 +48,8 @@ export class RegisterComponent {
     this.registrationFailed = false;
     const { login, birthYear } = this.userForm.value;
     const password = this.passwordGroup.value.password;
-    this.userService.register(login!, password!, birthYear!).subscribe({
-      next: () => this.router.navigateByUrl('/'),
+    this._userService.register(login!, password!, birthYear!).subscribe({
+      next: () => this._router.navigateByUrl('/'),
       error: () => (this.registrationFailed = true)
     });
   }
