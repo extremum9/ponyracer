@@ -21,6 +21,11 @@
               {{ user.money | number }}
             </span>
           </li>
+          <li class="nav-item">
+            <button id="logout-link" type="button" class="btn nav-link" aria-label="Logout" (click)="logout()">
+              <span class="fa fa-power-off"></span>
+            </button>
+          </li>
         </ul>
       }
     </div>

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../user.service';
 import { UserModel } from '../models/user.model';
 import { DecimalPipe } from '@angular/common';
@@ -16,11 +16,19 @@ export class MenuComponent {
   public navbarCollapsed = true;
   public user: UserModel | null = null;
 
-  constructor(private _userService: UserService) {
+  constructor(
+    private _router: Router,
+    private _userService: UserService
+  ) {
     this._userService.userEvents.pipe(takeUntilDestroyed()).subscribe(user => (this.user = user));
   }
 
   public toggleNavbar(): void {
     this.navbarCollapsed = !this.navbarCollapsed;
+  }
+
+  public logout(): void {
+    this._userService.logout();
+    this._router.navigateByUrl('/');
   }
 }

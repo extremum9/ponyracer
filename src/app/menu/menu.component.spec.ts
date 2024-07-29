@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, RouterLink } from '@angular/router';
+import { provideRouter, Router, RouterLink } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { BehaviorSubject } from 'rxjs';
 import { UserService } from '../user.service';
@@ -10,7 +10,7 @@ describe('MenuComponent', () => {
   let userService: jasmine.SpyObj<UserService>;
 
   beforeEach(() => {
-    userService = jasmine.createSpyObj<UserService>('UserService', [], {
+    userService = jasmine.createSpyObj<UserService>('UserService', ['logout'], {
       userEvents: new BehaviorSubject<UserModel | null>(null)
     });
     TestBed.configureTestingModule({
@@ -82,5 +82,24 @@ describe('MenuComponent', () => {
     expect(userService.userEvents.observed)
       .withContext('You need to unsubscribe from userEvents when the component is destroyed')
       .toBeFalse();
+  });
+
+  it('should display a logout button', () => {
+    const router = TestBed.inject(Router);
+    spyOn(router, 'navigateByUrl');
+    const fixture = TestBed.createComponent(MenuComponent);
+    fixture.detectChanges();
+
+    userService.userEvents.next({ login: 'cedric', money: 2000 } as UserModel);
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    const logout = element.querySelector<HTMLSpanElement>('span.fa-power-off')!;
+    expect(logout).withContext('You should have a span element with a class `fa-power-off` to log out').not.toBeNull();
+    logout.click();
+
+    fixture.detectChanges();
+    expect(userService.logout).toHaveBeenCalled();
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/');
   });
 });
