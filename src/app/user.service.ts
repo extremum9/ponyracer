@@ -32,6 +32,11 @@ export class UserService {
     }
   }
 
+  public logout(): void {
+    this.userEvents.next(null);
+    window.localStorage.removeItem('rememberMe');
+  }
+
   private storeLoggedInUser(user: UserModel): void {
     this.userEvents.next(user);
     window.localStorage.setItem('rememberMe', JSON.stringify(user));
