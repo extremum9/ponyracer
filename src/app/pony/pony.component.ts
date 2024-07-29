@@ -9,8 +9,10 @@ import { PonyModel } from '../models/pony.model';
   styleUrl: './pony.component.css'
 })
 export class PonyComponent {
-  @Input({ required: true }) ponyModel!: PonyModel;
-  @Output() readonly ponyClicked = new EventEmitter<PonyModel>();
+  @Input({ required: true })
+  public ponyModel!: PonyModel;
+  @Output()
+  public readonly ponyClicked = new EventEmitter<PonyModel>();
 
   public getPonyImageUrl(): string {
     return `images/pony-${this.ponyModel.color.toLowerCase()}.gif`;

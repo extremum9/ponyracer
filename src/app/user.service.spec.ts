@@ -7,6 +7,7 @@ import { UserModel } from './models/user.model';
 describe('UserService', () => {
   let userService: UserService;
   let http: HttpTestingController;
+  let localStorageGetItem: jasmine.Spy<(key: string) => string | null>;
 
   const user = {
     id: 1,
@@ -17,6 +18,8 @@ describe('UserService', () => {
   };
 
   beforeEach(() => {
+    localStorageGetItem = spyOn(Storage.prototype, 'getItem');
+    localStorageGetItem.and.returnValue(null);
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting()]
     });
@@ -26,9 +29,9 @@ describe('UserService', () => {
 
   afterAll(() => http.verify());
 
-  it('should authenticate a user', () => {
-    // spy on userEvents
+  it('should authenticate and store a user', () => {
     spyOn(userService.userEvents, 'next');
+    spyOn(Storage.prototype, 'setItem');
 
     let actualUser: UserModel | undefined;
     userService.authenticate('cedric', 'hello').subscribe(fetchedUser => (actualUser = fetchedUser));
@@ -39,6 +42,7 @@ describe('UserService', () => {
 
     expect(actualUser).withContext('The observable should return the user').toBe(user);
     expect(userService.userEvents.next).toHaveBeenCalledWith(user);
+    expect(Storage.prototype.setItem).toHaveBeenCalledWith('rememberMe', JSON.stringify(user));
   });
 
   it('should register a user', () => {
@@ -50,5 +54,23 @@ describe('UserService', () => {
     req.flush(user);
 
     expect(actualUser).withContext('You should emit the user.').toBe(user);
+  });
+
+  it('should retrieve a user if one is stored', () => {
+    spyOn(userService.userEvents, 'next');
+    localStorageGetItem.and.returnValue(JSON.stringify(user));
+
+    userService.retrieveUser();
+
+    expect(userService.userEvents.next).toHaveBeenCalledWith(user);
+    expect(localStorageGetItem).toHaveBeenCalledWith('rememberMe');
+  });
+
+  it('should retrieve no user if none stored', () => {
+    spyOn(userService.userEvents, 'next');
+
+    userService.retrieveUser();
+
+    expect(userService.userEvents.next).not.toHaveBeenCalled();
   });
 });

@@ -7,10 +7,10 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class RaceService {
-  constructor(private http: HttpClient) {}
+  constructor(private _http: HttpClient) {}
 
   public list(): Observable<RaceModel[]> {
     const params = { status: 'PENDING' };
-    return this.http.get<RaceModel[]>('https://ponyracer.ninja-squad.com/api/races', { params });
+    return this._http.get<RaceModel[]>('https://ponyracer.ninja-squad.com/api/races', { params });
   }
 }

@@ -10,15 +10,30 @@ export class UserService {
   public apiUrl = 'https://ponyracer.ninja-squad.com/api';
   public userEvents = new BehaviorSubject<UserModel | null>(null);
 
-  constructor(private http: HttpClient) {}
-
-  public authenticate(login: string, password: string): Observable<UserModel> {
-    const body = { login, password };
-    return this.http.post<UserModel>(`${this.apiUrl}/users/authentication`, body).pipe(tap(user => this.userEvents.next(user)));
+  constructor(private _http: HttpClient) {
+    this.retrieveUser();
   }
 
   public register(login: string, password: string, birthYear: number): Observable<UserModel> {
     const body = { login, password, birthYear };
-    return this.http.post<UserModel>(`${this.apiUrl}/users`, body);
+    return this._http.post<UserModel>(`${this.apiUrl}/users`, body);
+  }
+
+  public authenticate(login: string, password: string): Observable<UserModel> {
+    const body = { login, password };
+    return this._http.post<UserModel>(`${this.apiUrl}/users/authentication`, body).pipe(tap(user => this.storeLoggedInUser(user)));
+  }
+
+  public retrieveUser(): void {
+    const value = window.localStorage.getItem('rememberMe');
+    if (value) {
+      const user = JSON.parse(value) as UserModel;
+      this.userEvents.next(user);
+    }
+  }
+
+  private storeLoggedInUser(user: UserModel): void {
+    this.userEvents.next(user);
+    window.localStorage.setItem('rememberMe', JSON.stringify(user));
   }
 }

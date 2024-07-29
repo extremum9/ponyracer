@@ -11,5 +11,6 @@ import { FromNowPipe } from '../from-now.pipe';
   styleUrl: './race.component.css'
 })
 export class RaceComponent {
-  @Input({ required: true }) raceModel!: RaceModel;
+  @Input({ required: true })
+  public raceModel!: RaceModel;
 }

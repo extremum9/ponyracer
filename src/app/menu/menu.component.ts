@@ -16,8 +16,8 @@ export class MenuComponent {
   public navbarCollapsed = true;
   public user: UserModel | null = null;
 
-  constructor(private userService: UserService) {
-    this.userService.userEvents.pipe(takeUntilDestroyed()).subscribe(user => (this.user = user));
+  constructor(private _userService: UserService) {
+    this._userService.userEvents.pipe(takeUntilDestroyed()).subscribe(user => (this.user = user));
   }
 
   public toggleNavbar(): void {
