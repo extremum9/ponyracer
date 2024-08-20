@@ -30,7 +30,6 @@ describe('UserService', () => {
   afterAll(() => http.verify());
 
   it('should authenticate and store a user', () => {
-    spyOn(userService.userEvents, 'next');
     spyOn(Storage.prototype, 'setItem');
 
     let actualUser: UserModel | undefined;
@@ -41,7 +40,9 @@ describe('UserService', () => {
     req.flush(user);
 
     expect(actualUser).withContext('The observable should return the user').toBe(user);
-    expect(userService.userEvents.next).toHaveBeenCalledWith(user);
+    expect(userService.currentUser()).toEqual(user);
+
+    TestBed.flushEffects();
     expect(Storage.prototype.setItem).toHaveBeenCalledWith('rememberMe', JSON.stringify(user));
   });
 
@@ -57,30 +58,31 @@ describe('UserService', () => {
   });
 
   it('should retrieve a user if one is stored', () => {
-    spyOn(userService.userEvents, 'next');
     localStorageGetItem.and.returnValue(JSON.stringify(user));
 
     userService.retrieveUser();
 
-    expect(userService.userEvents.next).toHaveBeenCalledWith(user);
+    expect(userService.currentUser()).toEqual(user);
     expect(localStorageGetItem).toHaveBeenCalledWith('rememberMe');
   });
 
   it('should retrieve no user if none stored', () => {
-    spyOn(userService.userEvents, 'next');
-
     userService.retrieveUser();
 
-    expect(userService.userEvents.next).not.toHaveBeenCalled();
+    expect(userService.currentUser()).toBeNull();
   });
 
   it('should logout the user', () => {
-    spyOn(userService.userEvents, 'next');
     spyOn(Storage.prototype, 'removeItem');
+    localStorageGetItem.and.returnValue(JSON.stringify(user));
+    userService.retrieveUser();
+    expect(userService.currentUser()).toEqual(user);
 
     userService.logout();
 
-    expect(userService.userEvents.next).toHaveBeenCalledWith(null);
+    expect(userService.currentUser()).toBeNull();
+
+    TestBed.flushEffects();
     expect(Storage.prototype.removeItem).toHaveBeenCalledWith('rememberMe');
   });
 });

@@ -3,7 +3,7 @@
 </div>
 
 <div class="text-center">
-  @if (!user) {
+  @if (!user()) {
     <a class="btn btn-large btn-primary me-2" routerLink="/login">Login</a>
     <a class="btn btn-large btn-primary" routerLink="/register">Register</a>
   } @else {

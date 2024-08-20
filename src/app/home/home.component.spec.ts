@@ -1,15 +1,16 @@
+import { signal, WritableSignal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
 import { UserModel } from '../models/user.model';
 import { UserService } from '../user.service';
 import { HomeComponent } from './home.component';
 
 describe('HomeComponent', () => {
+  let currentUser: WritableSignal<UserModel | null>;
+
   beforeEach(() => {
-    const userService = jasmine.createSpyObj<UserService>('UserService', [], {
-      userEvents: new BehaviorSubject<UserModel | null>(null)
-    });
+    currentUser = signal(null);
+    const userService = jasmine.createSpyObj<UserService>('UserService', [], { currentUser });
     TestBed.configureTestingModule({
       providers: [provideRouter([]), { provide: UserService, useValue: userService }]
     });
@@ -49,27 +50,11 @@ describe('HomeComponent', () => {
     expect(buttonRegister.textContent).withContext('The link should have a text').toContain('Register');
   });
 
-  it('should unsubscribe on destruction', () => {
-    const userService = TestBed.inject(UserService);
-    const fixture = TestBed.createComponent(HomeComponent);
-
-    fixture.detectChanges();
-    expect(userService.userEvents.observed).withContext('You need to subscribe to userEvents when the component is created').toBeTrue();
-
-    fixture.destroy();
-    expect(userService.userEvents.observed)
-      .withContext('You need to unsubscribe from userEvents when the component is destroyed')
-      .toBeFalse();
-  });
-
   it('should display only a link to go the races page if logged in', () => {
-    const userService = TestBed.inject(UserService);
     const fixture = TestBed.createComponent(HomeComponent);
     fixture.detectChanges();
 
-    const user = { login: 'cedric', money: 2000 } as UserModel;
-
-    userService.userEvents.next(user);
+    currentUser.set({ login: 'cedric' } as UserModel);
     fixture.detectChanges();
 
     const element = fixture.nativeElement as HTMLElement;
