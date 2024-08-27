@@ -2,12 +2,12 @@ import { effect, Injectable, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { UserModel } from './models/user.model';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  public apiUrl = 'https://ponyracer.ninja-squad.com/api';
   private _user = signal<UserModel | null>(null);
   public readonly currentUser = this._user.asReadonly();
 
@@ -24,12 +24,12 @@ export class UserService {
 
   public register(login: string, password: string, birthYear: number): Observable<UserModel> {
     const body = { login, password, birthYear };
-    return this._http.post<UserModel>(`${this.apiUrl}/users`, body);
+    return this._http.post<UserModel>(`${environment.baseUrl}/api/users`, body);
   }
 
   public authenticate(login: string, password: string): Observable<UserModel> {
     const body = { login, password };
-    return this._http.post<UserModel>(`${this.apiUrl}/users/authentication`, body).pipe(tap(user => this._user.set(user)));
+    return this._http.post<UserModel>(`${environment.baseUrl}/api/users/authentication`, body).pipe(tap(user => this._user.set(user)));
   }
 
   public retrieveUser(): void {
