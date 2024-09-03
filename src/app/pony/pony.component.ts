@@ -11,6 +11,7 @@ import { PonyModel } from '../models/pony.model';
 export class PonyComponent {
   @Input({ required: true })
   public ponyModel!: PonyModel;
+
   @Output()
   public readonly ponyClicked = new EventEmitter<PonyModel>();
 

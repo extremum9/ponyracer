@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 import { RaceComponent } from '../race/race.component';
@@ -12,7 +13,7 @@ describe('RacesComponent', () => {
   beforeEach(() => {
     raceService = jasmine.createSpyObj<RaceService>('RaceService', ['list']);
     TestBed.configureTestingModule({
-      providers: [{ provide: RaceService, useValue: raceService }]
+      providers: [provideRouter([]), { provide: RaceService, useValue: raceService }]
     });
     raceService.list.and.returnValue(
       of([
@@ -28,5 +29,16 @@ describe('RacesComponent', () => {
     const debugElement = fixture.debugElement;
     const races = debugElement.queryAll(By.directive(RaceComponent));
     expect(races.length).withContext('You should have two `RaceComponent` displayed').toBe(2);
+  });
+
+  it('should display a link to bet on a race', () => {
+    const fixture = TestBed.createComponent(RacesComponent);
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    const raceNames = element.querySelectorAll('a');
+    expect(raceNames.length).withContext('You must have a link to go to the bet page for each race').toBe(2);
+    expect(raceNames[0].textContent).toContain('Bet on Tokyo');
+    expect(raceNames[1].textContent).toContain('Bet on Paris');
   });
 });
