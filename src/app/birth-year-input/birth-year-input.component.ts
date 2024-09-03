@@ -21,13 +21,14 @@ import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationError
   ]
 })
 export class BirthYearInputComponent implements ControlValueAccessor, Validator {
-  @Input({ required: true })
-  public inputId!: string;
   public value: number | null = null;
   public year: number | null = null;
   public disabled = false;
   public onChange: (value: number | null) => void = () => {};
   public onTouched: () => void = () => {};
+
+  @Input({ required: true })
+  public inputId!: string;
 
   public writeValue(value: number | null): void {
     this.value = value;
