@@ -36,7 +36,10 @@ export class BetComponent {
 
   public betOnPony(pony: PonyModel): void {
     this.betFailed = false;
-    this._raceService.bet(this.raceModel!.id, pony.id).subscribe({
+    const result$ = this.isPonySelected(pony)
+      ? this._raceService.cancelBet(this.raceModel!.id)
+      : this._raceService.bet(this.raceModel!.id, pony.id);
+    result$.subscribe({
       next: () => this._refreshSubject.next(),
       error: () => (this.betFailed = true)
     });

@@ -22,4 +22,8 @@ export class RaceService {
   public bet(raceId: number, ponyId: number): Observable<void> {
     return this._http.post<void>(`${environment.baseUrl}/api/races/${raceId}/bets`, { ponyId });
   }
+
+  public cancelBet(raceId: number): Observable<void> {
+    return this._http.delete<void>(`${environment.baseUrl}/api/races/${raceId}/bets`);
+  }
 }

@@ -60,4 +60,15 @@ describe('RaceService', () => {
 
     expect(called).toBe(true);
   });
+
+  it('should cancel a bet on a race', () => {
+    const raceId = 1;
+
+    let called = false;
+    raceService.cancelBet(raceId).subscribe(() => (called = true));
+
+    http.expectOne({ method: 'DELETE', url: `${environment.baseUrl}/api/races/${raceId}/bets` }).flush(null);
+
+    expect(called).toBe(true);
+  });
 });

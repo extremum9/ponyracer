@@ -87,6 +87,22 @@ describe('Bet', () => {
     // a pony is still selected
     cy.get('.selected').should('have.length', 1);
 
+    // cancel fails
+    cy.intercept('DELETE', 'api/races/12/bets', {
+      statusCode: 404
+    }).as('failedCancelBetRace');
+
+    // cancel bet on second pony
+    cy.get('img').eq(1).click();
+    cy.wait('@failedCancelBetRace');
+
+    // alert should be displayed
+    cy.get('.alert').should('contain', 'The race is already started or finished');
+
+    // close alert
+    cy.get('.alert button').click();
+    cy.get('.alert').should('not.exist');
+
     // bet fails
     cy.intercept('POST', 'api/races/12/bets', {
       statusCode: 404
@@ -102,5 +118,16 @@ describe('Bet', () => {
     // close alert
     cy.get('.alert button').click();
     cy.get('.alert').should('not.exist');
+
+    cy.intercept('DELETE', 'api/races/12/bets', {}).as('cancelBetRace');
+
+    // cancel bet
+    cy.intercept('GET', 'api/races/12', { ...race }).as('fourthGetRace');
+    cy.get('img').eq(1).click();
+    cy.wait('@cancelBetRace');
+    cy.wait('@fourthGetRace');
+
+    // no pony is selected anymore
+    cy.get('.selected').should('have.length', 0);
   });
 });
