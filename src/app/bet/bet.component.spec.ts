@@ -25,7 +25,7 @@ describe('BetComponent', () => {
   };
 
   beforeEach(() => {
-    raceService = jasmine.createSpyObj<RaceService>('RaceService', ['get', 'bet']);
+    raceService = jasmine.createSpyObj<RaceService>('RaceService', ['get', 'bet', 'cancelBet']);
     TestBed.configureTestingModule({
       providers: [provideRouter([{ path: 'races/:raceId', component: BetComponent }]), { provide: RaceService, useValue: raceService }]
     });
@@ -107,5 +107,54 @@ describe('BetComponent', () => {
     alertButton.click();
     harness.detectChanges();
     expect(element.querySelector('.alert.alert-danger')).withContext('Clicking on the button should close the alert').toBeNull();
+  });
+
+  it('should cancel a bet', async () => {
+    // given a race in Paris with 5 ponies and the one with ID 1 is bet, and the same race no pony being bet at the second call
+    const modifiedRace = { ...race, betPonyId: 1 };
+    raceService.get.and.returnValues(of(modifiedRace), of(race));
+
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/races/12', BetComponent);
+
+    raceService.cancelBet.and.returnValue(of(undefined));
+
+    // cancel bet on pony
+    const ponies = harness.routeDebugElement!.queryAll(By.directive(PonyComponent));
+    const gentlePie = ponies[0].componentInstance as PonyComponent;
+    gentlePie.ponyClicked.emit(race.ponies[0]);
+    harness.detectChanges();
+
+    expect(raceService.cancelBet).toHaveBeenCalledWith(12);
+    // we should have no element with the `selected` class
+    const selectedElements = harness.routeNativeElement!.querySelectorAll('.selected');
+    expect(selectedElements.length).withContext('You should have no element with the `selected` class').toBe(0);
+  });
+
+  it('should display a message if canceling a bet fails', async () => {
+    // given a race in Paris with 5 ponies and the one with ID 1 being bet
+    const modifiedRace = { ...race, betPonyId: 1 };
+    raceService.get.and.returnValue(of(modifiedRace));
+
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/races/12', BetComponent);
+
+    raceService.cancelBet.and.callFake(() => throwError(() => new Error('Oops')));
+
+    const element = harness.routeNativeElement!;
+    expect(element.querySelector('.alert.alert-danger')).toBeNull();
+
+    // cancel bet on pony
+    const ponies = harness.routeDebugElement!.queryAll(By.directive(PonyComponent));
+    const gentlePie = ponies[0].componentInstance as PonyComponent;
+    gentlePie.ponyClicked.emit(race.ponies[0]);
+    harness.detectChanges();
+
+    expect(raceService.cancelBet).toHaveBeenCalledWith(12);
+    // we should have no element with the `selected` class
+    const selectedElements = harness.routeNativeElement!.querySelectorAll('.selected');
+    expect(selectedElements.length).withContext('You should have an element with the `selected` class as the canceling failed').toBe(1);
+    const message = element.querySelector('.alert.alert-danger')!;
+    expect(message.textContent).toContain('The race is already started or finished');
   });
 });
