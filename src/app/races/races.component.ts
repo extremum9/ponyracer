@@ -3,6 +3,7 @@ import { RaceModel } from '../models/race.model';
 import { RaceComponent } from '../race/race.component';
 import { RaceService } from '../race.service';
 import { RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'pr-races',
@@ -15,6 +16,9 @@ export class RacesComponent {
   public races: RaceModel[] = [];
 
   constructor(private _raceService: RaceService) {
-    this._raceService.list().subscribe(races => (this.races = races));
+    this._raceService
+      .list()
+      .pipe(takeUntilDestroyed())
+      .subscribe(races => (this.races = races));
   }
 }
