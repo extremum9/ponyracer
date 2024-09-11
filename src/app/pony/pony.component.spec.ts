@@ -6,11 +6,12 @@ import { PonyComponent } from './pony.component';
 @Component({
   standalone: true,
   imports: [PonyComponent],
-  template: '<pr-pony [ponyModel]="pony()" (ponyClicked)="isPonyClicked.set(true)" />'
+  template: '<pr-pony [ponyModel]="pony()" [isRunning]="isRunning()" (ponyClicked)="isPonyClicked.set(true)" />'
 })
 export class PonyTestComponent {
   pony = signal<PonyModel>({ id: 1, name: 'Fast Rainbow', color: 'PURPLE' });
   isPonyClicked = signal(false);
+  isRunning = signal(false);
 }
 
 describe('PonyComponent', () => {
@@ -47,5 +48,17 @@ describe('PonyComponent', () => {
     expect(fixture.componentInstance.isPonyClicked())
       .withContext('You may have forgot the click handler on the `figure` element')
       .toBeTruthy();
+  });
+
+  it('should display a running pony', () => {
+    const fixture = TestBed.createComponent(PonyTestComponent);
+    fixture.componentInstance.isRunning.set(true);
+    fixture.detectChanges();
+
+    // then we should have an image with a running pony
+    const element = fixture.nativeElement as HTMLElement;
+    const image = element.querySelector('img')!;
+    expect(image).withContext('You should have an image for the pony').not.toBeNull();
+    expect(image.getAttribute('src')).withContext('The `src` attribute of the image is not correct').toBe('images/pony-purple-running.gif');
   });
 });
