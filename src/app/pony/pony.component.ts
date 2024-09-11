@@ -12,11 +12,14 @@ export class PonyComponent {
   @Input({ required: true })
   public ponyModel!: PonyModel;
 
+  @Input()
+  public isRunning = false;
+
   @Output()
   public readonly ponyClicked = new EventEmitter<PonyModel>();
 
   public getPonyImageUrl(): string {
-    return `images/pony-${this.ponyModel.color.toLowerCase()}.gif`;
+    return `images/pony-${this.ponyModel.color.toLowerCase()}${this.isRunning ? '-running' : ''}.gif`;
   }
 
   public clicked(): void {

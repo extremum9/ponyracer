@@ -3,7 +3,7 @@ import { RaceModel } from '../models/race.model';
 import { startWith, Subject, switchMap } from 'rxjs';
 import { RaceService } from '../race.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FromNowPipe } from '../from-now.pipe';
 import { PonyComponent } from '../pony/pony.component';
 import { PonyModel } from '../models/pony.model';
@@ -11,7 +11,7 @@ import { PonyModel } from '../models/pony.model';
 @Component({
   selector: 'pr-bet',
   standalone: true,
-  imports: [FromNowPipe, PonyComponent],
+  imports: [RouterLink, FromNowPipe, PonyComponent],
   templateUrl: './bet.component.html',
   styleUrl: './bet.component.css'
 })
