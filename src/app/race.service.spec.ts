@@ -104,6 +104,9 @@ describe('RaceService', () => {
       ]
     });
 
+    expect(positions.length).toBe(1);
+    expect(positions[0].position).toBe(1);
+
     messages.next({
       status: 'RUNNING',
       ponies: [
@@ -118,5 +121,20 @@ describe('RaceService', () => {
 
     expect(positions.length).toBe(1);
     expect(positions[0].position).toBe(100);
+
+    messages.next({
+      status: 'FINISHED',
+      ponies: [
+        {
+          id: 1,
+          name: 'Superb Runner',
+          color: 'BLUE',
+          position: 101
+        }
+      ]
+    });
+
+    expect(positions.length).toBe(1);
+    expect(positions[0].position).withContext('The observable should stop emitting if the race status is FINISHED').toBe(100);
   });
 });
