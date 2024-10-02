@@ -1,9 +1,9 @@
 import { Component, input } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { discardPeriodicTasks, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
-import { of, Subject } from 'rxjs';
+import { EMPTY, of, Subject } from 'rxjs';
 import { RaceService } from '../race.service';
 import { PonyModel, PonyWithPositionModel } from '../models/pony.model';
 import { RaceModel } from '../models/race.model';
@@ -18,6 +18,7 @@ import { LiveComponent } from './live.component';
 class PonyStubComponent {
   ponyModel = input.required<PonyModel>();
   isRunning = input(false);
+  isBoosted = input(false);
 }
 
 describe('LiveComponent', () => {
@@ -31,7 +32,7 @@ describe('LiveComponent', () => {
   } as RaceModel;
 
   beforeEach(() => {
-    raceService = jasmine.createSpyObj<RaceService>('RaceService', ['get', 'live']);
+    raceService = jasmine.createSpyObj<RaceService>('RaceService', ['get', 'live', 'boost']);
     TestBed.configureTestingModule({
       providers: [
         provideRouter([{ path: 'races/:raceId/live', component: LiveComponent }]),
@@ -59,7 +60,7 @@ describe('LiveComponent', () => {
     // there is no flag displayed as the race is PENDING
     expect(harness.routeNativeElement!.querySelector('.fa-flag')).toBeNull();
 
-    positions.next([{ id: 1, name: 'Sunny Sunday', color: 'BLUE', position: 0 }]);
+    positions.next([{ id: 1, name: 'Sunny Sunday', color: 'BLUE', position: 0, boosted: false }]);
     harness.detectChanges();
 
     // there is a flag displayed as the race is RUNNING
@@ -140,9 +141,9 @@ describe('LiveComponent', () => {
     expect(title.textContent).withContext('The template should display an h1 element with the race name inside').toContain('Lyon');
 
     positions.next([
-      { id: 1, name: 'Sunny Sunday', color: 'BLUE', position: 10 },
-      { id: 2, name: 'Pinkie Pie', color: 'GREEN', position: 10 },
-      { id: 3, name: 'Awesome Fridge', color: 'YELLOW', position: 9 }
+      { id: 1, name: 'Sunny Sunday', color: 'BLUE', position: 10, boosted: false },
+      { id: 2, name: 'Pinkie Pie', color: 'GREEN', position: 10, boosted: false },
+      { id: 3, name: 'Awesome Fridge', color: 'YELLOW', position: 9, boosted: false }
     ]);
     harness.detectChanges();
 
@@ -179,9 +180,9 @@ describe('LiveComponent', () => {
     expect(title.textContent).withContext('The template should display an h1 element with the race name inside').toContain('Lyon');
 
     positions.next([
-      { id: 1, name: 'Sunny Sunday', color: 'BLUE', position: 101 },
-      { id: 2, name: 'Pinkie Pie', color: 'GREEN', position: 100 },
-      { id: 3, name: 'Awesome Fridge', color: 'YELLOW', position: 9 }
+      { id: 1, name: 'Sunny Sunday', color: 'BLUE', position: 101, boosted: false },
+      { id: 2, name: 'Pinkie Pie', color: 'GREEN', position: 100, boosted: false },
+      { id: 3, name: 'Awesome Fridge', color: 'YELLOW', position: 9, boosted: false }
     ]);
     positions.complete();
     harness.detectChanges();
@@ -218,9 +219,9 @@ describe('LiveComponent', () => {
 
     const element = harness.routeNativeElement!;
     positions.next([
-      { id: 1, name: 'Sunny Sunday', color: 'BLUE', position: 101 },
-      { id: 2, name: 'Pinkie Pie', color: 'GREEN', position: 100 },
-      { id: 3, name: 'Awesome Fridge', color: 'YELLOW', position: 9 }
+      { id: 1, name: 'Sunny Sunday', color: 'BLUE', position: 101, boosted: false },
+      { id: 2, name: 'Pinkie Pie', color: 'GREEN', position: 100, boosted: false },
+      { id: 3, name: 'Awesome Fridge', color: 'YELLOW', position: 9, boosted: false }
     ]);
     positions.complete();
     harness.detectChanges();
@@ -282,4 +283,180 @@ describe('LiveComponent', () => {
     const alert = element.querySelector('div.alert.alert-danger')!;
     expect(alert.textContent).toContain('A problem occurred during the live.');
   });
+
+  it('should emit an event with the pony when a pony is clicked', async () => {
+    raceService.get.and.returnValue(of({ ...race }));
+    const positions = new Subject<Array<PonyWithPositionModel>>();
+    raceService.live.and.returnValue(positions);
+    const harness = await RouterTestingHarness.create();
+    const liveComponent = await harness.navigateByUrl('/races/12/live', LiveComponent);
+    spyOn(liveComponent.clickSubject, 'next');
+
+    const pony: PonyWithPositionModel = { id: 1, name: 'Sunny Sunday', color: 'BLUE', position: 101, boosted: false };
+    positions.next([
+      pony,
+      { id: 2, name: 'Pinkie Pie', color: 'GREEN', position: 100, boosted: false },
+      { id: 3, name: 'Awesome Fridge', color: 'YELLOW', position: 9, boosted: false }
+    ]);
+    harness.detectChanges();
+
+    // when clicking on the first pony
+    const ponyComponent = harness.routeDebugElement!.query(By.directive(PonyStubComponent));
+    expect(ponyComponent).withContext('You should display a `PonyComponent` for each pony').not.toBeNull();
+    ponyComponent.triggerEventHandler('ponyClicked', {});
+
+    // then we should emit the pony on the subject
+    expect(liveComponent.clickSubject.next).toHaveBeenCalledWith(pony);
+  });
+
+  it('should buffer clicks over a second and call the boost method', fakeAsync(async () => {
+    raceService.get.and.returnValue(of({ ...race, status: 'RUNNING' }));
+    raceService.boost.and.returnValue(of(undefined));
+    const positions = new Subject<Array<PonyWithPositionModel>>();
+    raceService.live.and.returnValue(positions);
+
+    const harness = await RouterTestingHarness.create();
+    const liveComponent = await harness.navigateByUrl('/races/12/live', LiveComponent);
+    tick();
+
+    const pony: PonyWithPositionModel = { id: 1, name: 'Sunny Sunday', color: 'BLUE', position: 10, boosted: false };
+
+    // when 5 clicks are emitted in a second
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    tick(1000);
+
+    // then we should call the boost method
+    expect(raceService.boost).toHaveBeenCalledWith(race.id, pony.id);
+    raceService.boost.calls.reset();
+
+    // when 5 clicks are emitted over 2 seconds
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    tick(1000);
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    tick(1000);
+
+    // then we should not call the boost method
+    expect(raceService.boost).not.toHaveBeenCalled();
+  }));
+
+  it('should filter click buffer that are not at least 5', fakeAsync(async () => {
+    raceService.get.and.returnValue(of({ ...race, status: 'RUNNING' }));
+    raceService.boost.and.returnValue(of(undefined));
+    raceService.live.and.returnValue(EMPTY);
+
+    const harness = await RouterTestingHarness.create();
+    const liveComponent = await harness.navigateByUrl('/races/12/live', LiveComponent);
+    tick();
+
+    const pony: PonyWithPositionModel = { id: 1, name: 'Sunny Sunday', color: 'BLUE', position: 10, boosted: false };
+    const pony2: PonyWithPositionModel = { id: 2, name: 'Black Friday', color: 'GREEN', position: 11, boosted: false };
+
+    // when 4 clicks are emitted in a second
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    tick(1000);
+
+    // then we should not call the boost method
+    expect(raceService.boost).not.toHaveBeenCalled();
+
+    // when 5 clicks are emitted over a second on two ponies
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony2);
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony2);
+    liveComponent.clickSubject.next(pony);
+    tick(1000);
+
+    // then we should not call the boost method
+    expect(raceService.boost).not.toHaveBeenCalled();
+  }));
+
+  it('should throttle repeated boosts', fakeAsync(async () => {
+    raceService.get.and.returnValue(of({ ...race, status: 'RUNNING' }));
+    raceService.boost.and.returnValue(of(undefined));
+    raceService.live.and.returnValue(EMPTY);
+
+    const harness = await RouterTestingHarness.create();
+    const liveComponent = await harness.navigateByUrl('/races/12/live', LiveComponent);
+    tick();
+
+    const pony: PonyWithPositionModel = { id: 1, name: 'Sunny Sunday', color: 'BLUE', position: 10, boosted: false };
+
+    // when 5 clicks are emitted in a second
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    tick(800);
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    tick(200);
+
+    // then we should call the boost method
+    expect(raceService.boost).toHaveBeenCalled();
+    raceService.boost.calls.reset();
+
+    // when 2 other clicks are emitted
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    tick(800);
+
+    // then we should not call the boost method with the throttling
+    expect(raceService.boost).not.toHaveBeenCalled();
+
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    tick(200);
+
+    // we should call it a bit later
+    expect(raceService.boost).toHaveBeenCalled();
+    discardPeriodicTasks();
+  }));
+
+  it('should catch a boost error', fakeAsync(async () => {
+    raceService.get.and.returnValue(of({ ...race, status: 'RUNNING' }));
+    const boost = new Subject<void>();
+    raceService.boost.and.returnValue(boost);
+    raceService.live.and.returnValue(EMPTY);
+
+    const harness = await RouterTestingHarness.create();
+    const liveComponent = await harness.navigateByUrl('/races/12/live', LiveComponent);
+    tick();
+
+    const pony: PonyWithPositionModel = { id: 1, name: 'Sunny Sunday', color: 'BLUE', position: 10, boosted: false };
+
+    // when 5 clicks are emitted in a second
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    tick(1000);
+
+    // then we should call the boost method
+    expect(raceService.boost).toHaveBeenCalled();
+    raceService.boost.calls.reset();
+    boost.error('You should catch a potential error from the boost method with a `catch` operator');
+
+    // when 5 other clicks are emitted
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    liveComponent.clickSubject.next(pony);
+    tick(1000);
+
+    // we should call it again if the previous error has been handled
+    expect(raceService.boost).toHaveBeenCalled();
+    discardPeriodicTasks();
+  }));
 });
