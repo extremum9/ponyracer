@@ -47,7 +47,7 @@
           <div style="width: 95%; border-right: 3px dotted lightgray">
             @for (pony of poniesWithPosition; track pony.id) {
               <div class="pony-wrapper" [class.selected]="pony.id === raceModel.betPonyId" [style.marginLeft.%]="pony.position - 5">
-                <pr-pony [ponyModel]="pony" [isRunning]="true" />
+                <pr-pony [ponyModel]="pony" [isRunning]="true" [isBoosted]="pony.boosted" (ponyClicked)="onClick(pony)" />
               </div>
             }
           </div>

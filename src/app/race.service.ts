@@ -38,4 +38,8 @@ export class RaceService {
       map(liveRace => liveRace.ponies)
     );
   }
+
+  public boost(raceId: number, ponyId: number): Observable<void> {
+    return this._http.post<void>(`${environment.baseUrl}/api/races/${raceId}/boosts`, { ponyId });
+  }
 }

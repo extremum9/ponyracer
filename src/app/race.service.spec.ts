@@ -99,7 +99,8 @@ describe('RaceService', () => {
           id: 1,
           name: 'Superb Runner',
           color: 'BLUE',
-          position: 1
+          position: 1,
+          boosted: false
         }
       ]
     });
@@ -114,7 +115,8 @@ describe('RaceService', () => {
           id: 1,
           name: 'Superb Runner',
           color: 'BLUE',
-          position: 100
+          position: 100,
+          boosted: false
         }
       ]
     });
@@ -129,12 +131,27 @@ describe('RaceService', () => {
           id: 1,
           name: 'Superb Runner',
           color: 'BLUE',
-          position: 101
+          position: 101,
+          boosted: false
         }
       ]
     });
 
     expect(positions.length).toBe(1);
     expect(positions[0].position).withContext('The observable should stop emitting if the race status is FINISHED').toBe(100);
+  });
+
+  it('should boost a pony in a race', () => {
+    const ponyId = 12;
+    const raceId = 1;
+
+    let called = false;
+    raceService.boost(raceId, ponyId).subscribe(() => (called = true));
+
+    const req = http.expectOne({ method: 'POST', url: `${environment.baseUrl}/api/races/${raceId}/boosts` });
+    expect(req.request.body).toEqual({ ponyId });
+    req.flush(null);
+
+    expect(called).toBe(true);
   });
 });

@@ -6,12 +6,13 @@ import { PonyComponent } from './pony.component';
 @Component({
   standalone: true,
   imports: [PonyComponent],
-  template: '<pr-pony [ponyModel]="pony()" [isRunning]="isRunning()" (ponyClicked)="isPonyClicked.set(true)" />'
+  template: '<pr-pony [ponyModel]="pony()" [isRunning]="isRunning()" [isBoosted]="isBoosted()" (ponyClicked)="isPonyClicked.set(true)" />'
 })
 export class PonyTestComponent {
   pony = signal<PonyModel>({ id: 1, name: 'Fast Rainbow', color: 'PURPLE' });
   isPonyClicked = signal(false);
   isRunning = signal(false);
+  isBoosted = signal(false);
 }
 
 describe('PonyComponent', () => {
@@ -60,5 +61,17 @@ describe('PonyComponent', () => {
     const image = element.querySelector('img')!;
     expect(image).withContext('You should have an image for the pony').not.toBeNull();
     expect(image.getAttribute('src')).withContext('The `src` attribute of the image is not correct').toBe('images/pony-purple-running.gif');
+  });
+
+  it('should display a boosted pony', () => {
+    const fixture = TestBed.createComponent(PonyTestComponent);
+    fixture.componentInstance.isBoosted.set(true);
+    fixture.detectChanges();
+
+    // then we should have an image with a boosted pony
+    const element = fixture.nativeElement as HTMLElement;
+    const image = element.querySelector('img')!;
+    expect(image).withContext('You should have an image for the pony').not.toBeNull();
+    expect(image.getAttribute('src')).withContext('The `src` attribute of the image is not correct').toBe('images/pony-purple-rainbow.gif');
   });
 });
