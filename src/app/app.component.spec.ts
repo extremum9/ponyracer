@@ -5,11 +5,20 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { MenuComponent } from './menu/menu.component';
+import { WsService } from './ws.service';
 
 describe('AppComponent', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])]
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        {
+          provide: WsService,
+          useValue: jasmine.createSpyObj<WsService>('WsService', ['connect'])
+        }
+      ]
     })
   );
 

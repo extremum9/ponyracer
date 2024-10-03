@@ -3,6 +3,7 @@ import { Observable, tap } from 'rxjs';
 import { UserModel } from './models/user.model';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../environments/environment';
+import { WsService } from './ws.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,10 @@ export class UserService {
   private _user = signal<UserModel | null>(null);
   public readonly currentUser = this._user.asReadonly();
 
-  constructor(private _http: HttpClient) {
+  constructor(
+    private _http: HttpClient,
+    private _wsService: WsService
+  ) {
     this.retrieveUser();
     effect(() => {
       if (this._user()) {
@@ -42,5 +46,9 @@ export class UserService {
 
   public logout(): void {
     this._user.set(null);
+  }
+
+  public scoreUpdates(userId: number): Observable<UserModel> {
+    return this._wsService.connect<UserModel>(`/player/${userId}`);
   }
 }

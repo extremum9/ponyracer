@@ -1,3 +1,5 @@
+import * as WebstompClient from 'webstomp-client';
+
 describe('Ponyracer', () => {
   const user = {
     id: 1,
@@ -6,6 +8,12 @@ describe('Ponyracer', () => {
     registrationInstant: '2015-12-01T11:00:00Z',
     token: 'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjF9.5cAW816GUAg3OWKWlsYyXI4w3fDrS5BpnmbyBjVM7lo'
   };
+  type UserModel = typeof user;
+
+  interface GlobalUtilsFunctions {
+    getComponent: (element: Element | null) => unknown;
+    applyChanges: (component: unknown) => void;
+  }
 
   const race = {
     id: 12,
@@ -19,6 +27,38 @@ describe('Ponyracer', () => {
     ],
     startInstant: '2020-02-18T08:02:00Z'
   };
+
+  function buildFakeWS() {
+    const fakeWS = {
+      close: () => {
+        return;
+      },
+      send: (message: string) => {
+        const unmarshalled = WebstompClient.Frame.unmarshallSingle(message);
+        if (unmarshalled.command === 'CONNECT') {
+          fakeWS.onmessage!({ data: WebstompClient.Frame.marshall('CONNECTED') } as MessageEvent);
+        } else if (unmarshalled.command === 'SUBSCRIBE' && unmarshalled.headers['destination'] === '/player/1') {
+          fakeWS.id = unmarshalled.headers['id'];
+        }
+      },
+      emulateScore: (userModel: UserModel) => {
+        const headers = {
+          destination: '/player/1',
+          subscription: fakeWS.id
+        };
+        const data = WebstompClient.Frame.marshall('MESSAGE', headers, JSON.stringify(userModel));
+        fakeWS.onmessage!({ data } as MessageEvent);
+      }
+    } as WebSocket & { id: string | undefined; emulateScore: (user: UserModel) => void };
+    const wsOptions = {
+      onBeforeLoad: (win: Window) => {
+        cy.stub(win as Window & { WebSocket: WebSocket }, 'WebSocket')
+          .as('ws')
+          .returns(fakeWS);
+      }
+    };
+    return { fakeWS, wsOptions };
+  }
 
   function startBackend(): void {
     cy.intercept('POST', 'api/users/authentication', user).as('authenticateUser');
@@ -80,11 +120,33 @@ describe('Ponyracer', () => {
 
   it('should log out the user', () => {
     storeUserInLocalStorage();
-    cy.visit('/races');
+    const { fakeWS, wsOptions } = buildFakeWS();
+    cy.visit('/races', wsOptions);
     cy.wait('@getRaces').its('request.headers').should('have.property', 'authorization', `Bearer ${user.token}`);
+
+    cy.get('@ws').should('be.called');
 
     // user stored should be displayed
     cy.get('#current-user').should('contain', 'cedric').and('contain', '1,000');
+    cy.wait(1000);
+
+    let angular: GlobalUtilsFunctions;
+    cy.window().then((win: Window) => (angular = (win as unknown as { ng: GlobalUtilsFunctions }).ng));
+    let document: Document;
+    cy.document().then(doc => (document = doc));
+
+    cy.get('#current-user').then(() => {
+      fakeWS.emulateScore({
+        ...user,
+        money: 1200
+      });
+      const element = document.querySelector('pr-menu');
+      const liveComponent = angular.getComponent(element);
+      angular.applyChanges(liveComponent);
+    });
+
+    // user score updated
+    cy.get('#current-user').should('contain', 'cedric').and('contain', '1,200');
 
     // logout
     cy.get('span.fa.fa-power-off').click();
