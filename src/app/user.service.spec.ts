@@ -1,13 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { of } from 'rxjs';
 import { environment } from '../environments/environment';
 import { UserService } from './user.service';
 import { UserModel } from './models/user.model';
+import { WsService } from './ws.service';
 
 describe('UserService', () => {
   let userService: UserService;
   let http: HttpTestingController;
+  const wsService = jasmine.createSpyObj<WsService>('WsService', ['connect']);
   let localStorageGetItem: jasmine.Spy<(key: string) => string | null>;
 
   const user = {
@@ -22,10 +25,11 @@ describe('UserService', () => {
     localStorageGetItem = spyOn(Storage.prototype, 'getItem');
     localStorageGetItem.and.returnValue(null);
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()]
+      providers: [provideHttpClient(), provideHttpClientTesting(), { provide: WsService, useValue: wsService }]
     });
     userService = TestBed.inject(UserService);
     http = TestBed.inject(HttpTestingController);
+    wsService.connect.and.returnValue(of());
   });
 
   afterAll(() => http.verify());
@@ -85,5 +89,13 @@ describe('UserService', () => {
 
     TestBed.flushEffects();
     expect(Storage.prototype.removeItem).toHaveBeenCalledWith('rememberMe');
+  });
+
+  it('should subscribe to the score of the user', () => {
+    const userId = 1;
+
+    userService.scoreUpdates(userId).subscribe();
+
+    expect(wsService.connect).toHaveBeenCalledWith(`/player/${userId}`);
   });
 });

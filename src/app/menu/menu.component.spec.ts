@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { UserService } from '../user.service';
 import { UserModel } from '../models/user.model';
 import { MenuComponent } from './menu.component';
+import { of, Subject } from 'rxjs';
 
 describe('MenuComponent', () => {
   let currentUser: WritableSignal<UserModel | null>;
@@ -12,10 +13,11 @@ describe('MenuComponent', () => {
 
   beforeEach(() => {
     currentUser = signal(null);
-    userService = jasmine.createSpyObj<UserService>('UserService', ['logout'], { currentUser });
+    userService = jasmine.createSpyObj<UserService>('UserService', ['logout', 'scoreUpdates'], { currentUser });
     TestBed.configureTestingModule({
       providers: [provideRouter([]), { provide: UserService, useValue: userService }]
     });
+    userService.scoreUpdates.and.returnValue(of());
   });
 
   it('should toggle the class on click', () => {
@@ -70,6 +72,42 @@ describe('MenuComponent', () => {
     expect(info).withContext('You should have a `span` element with the ID `current-user` to display the user info').not.toBeNull();
     expect(info.textContent).withContext('You should display the name of the user in a `span` element').toContain('cedric');
     expect(info.textContent).withContext('You should display the score of the user in a `span` element').toContain('2,000');
+  });
+
+  it('should listen to score updates', () => {
+    const fixture = TestBed.createComponent(MenuComponent);
+
+    // emulate a login
+    const scoreUpdates = new Subject<UserModel>();
+    userService.scoreUpdates.and.returnValue(scoreUpdates);
+    const user = { id: 1, login: 'cedric', money: 200 } as UserModel;
+    currentUser.set(user);
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.user()).withContext('Your component should listen to the user changes').toBe(user);
+    expect(userService.scoreUpdates).toHaveBeenCalledWith(user.id);
+
+    // emulate a score update
+    user.money = 300;
+    scoreUpdates.next(user);
+
+    expect(fixture.componentInstance.user()!.money).withContext('Your component should listen to the `scoreUpdates` observable').toBe(300);
+
+    // emulate an error
+    scoreUpdates.error('You should catch potential errors on score updates with a `.catchError()`');
+    expect(fixture.componentInstance.user()!.money).withContext('Your component should catch error on score updates').toBe(300);
+
+    // emulate a score update
+    user.money = 400;
+    scoreUpdates.next(user);
+
+    expect(fixture.componentInstance.user()!.money).withContext('Your component should catch error on score updates').toBe(400);
+
+    // emulate a logout
+    currentUser.set(null);
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.user()).withContext('Your component should listen to the user changes').toBe(null);
   });
 
   it('should display a logout button', () => {
