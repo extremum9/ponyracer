@@ -12,6 +12,14 @@ describe('Races', () => {
     startInstant: '2020-02-18T08:02:00Z'
   };
 
+  const user = {
+    id: 1,
+    login: 'cedric',
+    money: 1000,
+    registrationInstant: '2015-12-01T11:00:00Z',
+    token: 'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjF9.5cAW816GUAg3OWKWlsYyXI4w3fDrS5BpnmbyBjVM7lo'
+  };
+
   function startBackend(): void {
     cy.intercept('GET', 'api/races?status=PENDING', [
       race,
@@ -30,6 +38,10 @@ describe('Races', () => {
     ]).as('getRaces');
   }
 
+  function storeUserInLocalStorage(): void {
+    localStorage.setItem('rememberMe', JSON.stringify(user));
+  }
+
   beforeEach(() => {
     startBackend();
     localStorage.setItem('preferred-lang', 'en');
@@ -37,12 +49,20 @@ describe('Races', () => {
 
   it('should display a race list', () => {
     cy.visit('/races');
+
+    // not logged, so redirected
+    cy.location('pathname')
+      .should('eq', '/')
+      .then(() => storeUserInLocalStorage());
+
+    cy.visit('/races');
     cy.wait('@getRaces');
     cy.get('h2').should('have.length', 2);
     cy.get('p').should('have.length', 2).and('contain', 'ago');
   });
 
   it('should display ponies', () => {
+    storeUserInLocalStorage();
     cy.visit('/races');
     cy.wait('@getRaces');
     cy.get('figure').should('have.length', 10);

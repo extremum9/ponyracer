@@ -5,6 +5,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { BetComponent } from './bet/bet.component';
 import { LiveComponent } from './live/live.component';
+import { loggedInGuard } from './logged-in.guard';
 
 export const routes: Routes = [
   {
@@ -12,15 +13,8 @@ export const routes: Routes = [
     component: HomeComponent
   },
   {
-    path: 'login',
-    component: LoginComponent
-  },
-  {
-    path: 'register',
-    component: RegisterComponent
-  },
-  {
     path: 'races',
+    canActivate: [loggedInGuard],
     children: [
       {
         path: '',
@@ -35,5 +29,13 @@ export const routes: Routes = [
         component: LiveComponent
       }
     ]
+  },
+  {
+    path: 'login',
+    component: LoginComponent
+  },
+  {
+    path: 'register',
+    component: RegisterComponent
   }
 ];
