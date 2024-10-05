@@ -15,8 +15,8 @@ export class RaceService {
     private _wsService: WsService
   ) {}
 
-  public list(): Observable<RaceModel[]> {
-    const params = { status: 'PENDING' };
+  public list(status: 'PENDING' | 'RUNNING' | 'FINISHED'): Observable<RaceModel[]> {
+    const params = { status };
     return this._http.get<RaceModel[]>(`${environment.baseUrl}/api/races`, { params });
   }
 
