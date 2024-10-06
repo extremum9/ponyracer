@@ -17,7 +17,7 @@ describe('Register', () => {
   });
 
   it('should display a register page', () => {
-    cy.visit('/register');
+    cy.visit('/users/register');
 
     const loginInput = () => cy.get('input').first();
     const passwordInput = () => cy.get('input[type=password]').first();
