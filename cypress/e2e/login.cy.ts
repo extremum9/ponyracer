@@ -22,7 +22,7 @@ describe('Login', () => {
   });
 
   it('should display a login page', () => {
-    cy.visit('/login');
+    cy.visit('/users/login');
 
     cy.get('button').should('be.visible').and('be.disabled');
     loginInput().type('c');
@@ -45,7 +45,7 @@ describe('Login', () => {
   });
 
   it('should display an alert if login fails', () => {
-    cy.visit('/login');
+    cy.visit('/users/login');
 
     cy.intercept('POST', 'api/users/authentication', {
       statusCode: 404
@@ -57,7 +57,7 @@ describe('Login', () => {
     submitButton().click();
     cy.wait('@failedAuthenticateUser');
 
-    cy.location('pathname').should('eq', '/login');
+    cy.location('pathname').should('eq', '/users/login');
 
     cy.get('.alert-danger').should('contain', 'Nope, try again');
   });
