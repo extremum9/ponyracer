@@ -7,11 +7,12 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FromNowPipe } from '../from-now.pipe';
 import { PonyComponent } from '../pony/pony.component';
 import { PonyModel } from '../models/pony.model';
+import { AlertComponent } from '../alert/alert.component';
 
 @Component({
   selector: 'pr-bet',
   standalone: true,
-  imports: [RouterLink, FromNowPipe, PonyComponent],
+  imports: [RouterLink, FromNowPipe, PonyComponent, AlertComponent],
   templateUrl: './bet.component.html',
   styleUrl: './bet.component.css'
 })

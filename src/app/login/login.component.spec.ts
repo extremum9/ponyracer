@@ -1,9 +1,23 @@
+import { booleanAttribute, Component, input, output } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
+import { By } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { UserService } from '../user.service';
 import { UserModel } from '../models/user.model';
 import { LoginComponent } from './login.component';
+import { AlertComponent } from '../alert/alert.component';
+
+@Component({
+  selector: 'pr-alert',
+  template: '<div><ng-content></ng-content></div>',
+  standalone: true
+})
+class AlertStubComponent {
+  type = input<'success' | 'danger' | 'warning'>();
+  dismissible = input(true, { transform: booleanAttribute });
+  closed = output<void>();
+}
 
 describe('LoginComponent', () => {
   let userService: jasmine.SpyObj<UserService>;
@@ -12,6 +26,14 @@ describe('LoginComponent', () => {
     userService = jasmine.createSpyObj<UserService>('UserService', ['authenticate']);
     TestBed.configureTestingModule({
       providers: [provideRouter([]), { provide: UserService, useValue: userService }]
+    });
+    TestBed.overrideComponent(LoginComponent, {
+      remove: {
+        imports: [AlertComponent]
+      },
+      add: {
+        imports: [AlertStubComponent]
+      }
     });
   });
 
@@ -144,7 +166,9 @@ describe('LoginComponent', () => {
     userService.authenticate.and.returnValue(subject);
 
     const element = fixture.nativeElement as HTMLElement;
-    expect(element.querySelector('.alert')).withContext('You should not have an error message before trying to log in').toBeNull();
+    expect(fixture.debugElement.query(By.directive(AlertStubComponent)))
+      .withContext('You should not have an error message before trying to log in')
+      .toBeNull();
     const loginInput = element.querySelector('input')!;
     expect(loginInput).withContext('You should have an input for the login').not.toBeNull();
     loginInput.value = 'login';
@@ -165,9 +189,11 @@ describe('LoginComponent', () => {
     // and not redirect to the home
     expect(router.navigateByUrl).not.toHaveBeenCalled();
 
-    expect(element.querySelector('.alert'))
-      .withContext('You should have a div with a class `alert` to display an error message')
-      .not.toBeNull();
-    expect(element.querySelector('.alert')!.textContent).toContain('Nope, try again');
+    const alert = fixture.debugElement.query(By.directive(AlertStubComponent));
+    expect(alert).withContext('You should have an AlertComponent to display an error message').not.toBeNull();
+    expect((alert.nativeElement as HTMLElement).textContent).toContain('Nope, try again');
+    expect((alert.componentInstance as AlertStubComponent).type())
+      .withContext('The alert should be a danger one')
+      .toBe('danger');
   });
 });

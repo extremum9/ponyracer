@@ -1,9 +1,6 @@
 @if (raceModel) {
   @if (betFailed) {
-    <div class="alert alert-danger alert-dismissible mb-3">
-      <button type="button" class="btn-close" aria-label="Close" (click)="betFailed = false"></button>
-      The race is already started or finished
-    </div>
+    <pr-alert class="mb-3" type="danger" (closed)="betFailed = false">The race is already started or finished</pr-alert>
   }
   <div>
     <h1>{{ raceModel.name }}</h1>
