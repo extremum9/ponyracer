@@ -1,9 +1,23 @@
+import { booleanAttribute, Component, input, output } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
+import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
 import { UserService } from '../user.service';
 import { UserModel } from '../models/user.model';
 import { RegisterComponent } from './register.component';
+import { AlertComponent } from '../alert/alert.component';
+
+@Component({
+  selector: 'pr-alert',
+  template: '<div><ng-content></ng-content></div>',
+  standalone: true
+})
+class AlertStubComponent {
+  type = input<'success' | 'danger' | 'warning'>();
+  dismissible = input(true, { transform: booleanAttribute });
+  closed = output<void>();
+}
 
 describe('RegisterComponent', () => {
   let userService: jasmine.SpyObj<UserService>;
@@ -12,6 +26,14 @@ describe('RegisterComponent', () => {
     userService = jasmine.createSpyObj<UserService>('UserService', ['register']);
     TestBed.configureTestingModule({
       providers: [provideRouter([]), { provide: UserService, useValue: userService }]
+    });
+    TestBed.overrideComponent(RegisterComponent, {
+      remove: {
+        imports: [AlertComponent]
+      },
+      add: {
+        imports: [AlertStubComponent]
+      }
     });
   });
 
@@ -204,10 +226,11 @@ describe('RegisterComponent', () => {
     // and not navigate
     expect(router.navigateByUrl).not.toHaveBeenCalled();
     // and display the error message
-    const errorMessage = element.querySelector('#registration-error')!;
-    expect(errorMessage)
-      .withContext('You should display an error message in a div with id `registration-error` if the registration fails')
-      .not.toBeNull();
-    expect(errorMessage.textContent).toContain('Try again with another login.');
+    const errorMessage = fixture.debugElement.query(By.directive(AlertStubComponent));
+    expect(errorMessage).withContext('You should display an error message in an AlertComponent if the registration fails').not.toBeNull();
+    expect((errorMessage.nativeElement as HTMLElement).textContent).toContain('Try again with another login.');
+    expect((errorMessage.componentInstance as AlertStubComponent).type())
+      .withContext('The alert should be a danger one')
+      .toBe('danger');
   });
 });

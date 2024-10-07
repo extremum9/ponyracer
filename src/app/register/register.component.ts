@@ -3,11 +3,12 @@ import { AbstractControl, NonNullableFormBuilder, ReactiveFormsModule, Validatio
 import { UserService } from '../user.service';
 import { Router } from '@angular/router';
 import { BirthYearInputComponent } from '../birth-year-input/birth-year-input.component';
+import { AlertComponent } from '../alert/alert.component';
 
 @Component({
   selector: 'pr-register',
   standalone: true,
-  imports: [ReactiveFormsModule, BirthYearInputComponent],
+  imports: [ReactiveFormsModule, BirthYearInputComponent, AlertComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })

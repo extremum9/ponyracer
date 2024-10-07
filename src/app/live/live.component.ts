@@ -7,11 +7,12 @@ import { PonyWithPositionModel } from '../models/pony.model';
 import { PonyComponent } from '../pony/pony.component';
 import { bufferToggle, catchError, EMPTY, filter, groupBy, interval, map, mergeMap, Subject, switchMap, tap, throttleTime } from 'rxjs';
 import { FromNowPipe } from '../from-now.pipe';
+import { AlertComponent } from '../alert/alert.component';
 
 @Component({
   selector: 'pr-live',
   standalone: true,
-  imports: [FromNowPipe, PonyComponent],
+  imports: [FromNowPipe, PonyComponent, AlertComponent],
   templateUrl: './live.component.html',
   styleUrl: './live.component.css'
 })

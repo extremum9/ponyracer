@@ -1,3 +1,4 @@
+import { booleanAttribute, Component, input, output } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
@@ -8,6 +9,18 @@ import { RaceService } from '../race.service';
 import { PonyComponent } from '../pony/pony.component';
 import { RaceModel } from '../models/race.model';
 import { BetComponent } from './bet.component';
+import { AlertComponent } from '../alert/alert.component';
+
+@Component({
+  selector: 'pr-alert',
+  template: '<div><ng-content></ng-content></div>',
+  standalone: true
+})
+class AlertStubComponent {
+  type = input<'success' | 'danger' | 'warning'>();
+  dismissible = input(true, { transform: booleanAttribute });
+  closed = output<void>();
+}
 
 describe('BetComponent', () => {
   let raceService: jasmine.SpyObj<RaceService>;
@@ -28,6 +41,14 @@ describe('BetComponent', () => {
     raceService = jasmine.createSpyObj<RaceService>('RaceService', ['get', 'bet', 'cancelBet']);
     TestBed.configureTestingModule({
       providers: [provideRouter([{ path: 'races/:raceId', component: BetComponent }]), { provide: RaceService, useValue: raceService }]
+    });
+    TestBed.overrideComponent(BetComponent, {
+      remove: {
+        imports: [AlertComponent]
+      },
+      add: {
+        imports: [AlertStubComponent]
+      }
     });
   });
 
@@ -89,24 +110,28 @@ describe('BetComponent', () => {
 
     raceService.bet.and.callFake(() => throwError(() => new Error('Oops')));
 
-    const element = harness.routeNativeElement!;
-    expect(element.querySelector('.alert.alert-danger')).toBeNull();
+    const debugElement = harness.routeDebugElement!;
+    expect(debugElement.query(By.directive(AlertStubComponent))).toBeNull();
 
     // bet on pony
-    const ponies = harness.routeDebugElement!.queryAll(By.directive(PonyComponent));
+    const ponies = debugElement.queryAll(By.directive(PonyComponent));
     const gentlePie = ponies[0].componentInstance as PonyComponent;
     gentlePie.ponyClicked.emit(race.ponies[0]);
     harness.detectChanges();
 
-    const message = element.querySelector('.alert.alert-danger')!;
-    expect(message.textContent).toContain('The race is already started or finished');
+    const message = debugElement.query(By.directive(AlertStubComponent));
+    expect(message).withContext('You should have an AlertComponent if the bet failed').not.toBeNull();
+    expect((message.nativeElement as HTMLElement).textContent).toContain('The race is already started or finished');
+    expect((message.componentInstance as AlertStubComponent).type())
+      .withContext('The alert should be a danger one')
+      .toBe('danger');
 
     // close the alert
-    const alertButton = message.querySelector('button')!;
-    expect(alertButton).withContext('The message should have a close button').not.toBeNull();
-    alertButton.click();
+    (message.componentInstance as AlertStubComponent).closed.emit();
     harness.detectChanges();
-    expect(element.querySelector('.alert.alert-danger')).withContext('Clicking on the button should close the alert').toBeNull();
+    expect(debugElement.query(By.directive(AlertStubComponent)))
+      .withContext('The AlertComponent should be closable')
+      .toBeNull();
   });
 
   it('should cancel a bet', async () => {
@@ -141,11 +166,11 @@ describe('BetComponent', () => {
 
     raceService.cancelBet.and.callFake(() => throwError(() => new Error('Oops')));
 
-    const element = harness.routeNativeElement!;
-    expect(element.querySelector('.alert.alert-danger')).toBeNull();
+    const debugElement = harness.routeDebugElement!;
+    expect(debugElement.query(By.directive(AlertStubComponent))).toBeNull();
 
     // cancel bet on pony
-    const ponies = harness.routeDebugElement!.queryAll(By.directive(PonyComponent));
+    const ponies = debugElement.queryAll(By.directive(PonyComponent));
     const gentlePie = ponies[0].componentInstance as PonyComponent;
     gentlePie.ponyClicked.emit(race.ponies[0]);
     harness.detectChanges();
@@ -154,8 +179,12 @@ describe('BetComponent', () => {
     // we should have no element with the `selected` class
     const selectedElements = harness.routeNativeElement!.querySelectorAll('.selected');
     expect(selectedElements.length).withContext('You should have an element with the `selected` class as the canceling failed').toBe(1);
-    const message = element.querySelector('.alert.alert-danger')!;
-    expect(message.textContent).toContain('The race is already started or finished');
+    const message = debugElement.query(By.directive(AlertStubComponent));
+    expect(message).withContext('You should have an AlertComponent if the bet failed').not.toBeNull();
+    expect((message.nativeElement as HTMLElement).textContent).toContain('The race is already started or finished');
+    expect((message.componentInstance as AlertStubComponent).type())
+      .withContext('The alert should be a danger one')
+      .toBe('danger');
   });
 
   it('should display a link to go to live', async () => {

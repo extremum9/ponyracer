@@ -2,11 +2,12 @@ import { Component, inject } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService } from '../user.service';
 import { Router } from '@angular/router';
+import { AlertComponent } from '../alert/alert.component';
 
 @Component({
   selector: 'pr-login',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AlertComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
