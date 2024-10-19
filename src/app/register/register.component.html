@@ -7,8 +7,8 @@
     }
 
     <form [formGroup]="userForm" (ngSubmit)="register()">
-      <div class="mb-3">
-        <label for="login" class="form-label">Login</label>
+      <div class="mb-3" prFormLabelValidation>
+        <label for="login" class="form-label" prFormLabel>Login</label>
         <input id="login" type="text" class="form-control" formControlName="login" />
         @if (loginCtrl.dirty) {
           @if (loginCtrl.hasError('required')) {
@@ -22,15 +22,15 @@
       </div>
 
       <div formGroupName="passwordForm">
-        <div class="mb-3">
-          <label for="password" class="form-label">Password</label>
+        <div class="mb-3" prFormLabelValidation>
+          <label for="password" class="form-label" prFormLabel>Password</label>
           <input id="password" class="form-control" type="password" formControlName="password" />
           @if (passwordCtrl.dirty && passwordCtrl.hasError('required')) {
             <div id="password-required-error" class="invalid-feedback">Password is required</div>
           }
         </div>
-        <div class="mb-3">
-          <label for="confirm" class="form-label">Confirm password</label>
+        <div class="mb-3" prFormLabelValidation>
+          <label for="confirm" class="form-label" prFormLabel>Confirm password</label>
           <input id="confirm" type="password" class="form-control" formControlName="confirmPassword" />
           @if (confirmPasswordCtrl.dirty && confirmPasswordCtrl.hasError('required')) {
             <div id="confirm-password-required-error" class="invalid-feedback">Password confirmation is required</div>
@@ -41,8 +41,8 @@
         }
       </div>
 
-      <div class="mb-3">
-        <label for="birth-year" class="form-label">Birth year</label>
+      <div class="mb-3" prFormLabelValidation>
+        <label for="birth-year" class="form-label" prFormLabel>Birth year</label>
         <pr-birth-year-input inputId="birth-year" formControlName="birthYear" />
         @if (birthYearCtrl.dirty) {
           @if (birthYearCtrl.hasError('required')) {

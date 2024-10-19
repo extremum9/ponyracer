@@ -5,15 +5,15 @@
       <pr-alert type="danger">Nope, try again.</pr-alert>
     }
     <form [formGroup]="userForm" (ngSubmit)="authenticate()">
-      <div class="mb-3">
-        <label for="login" class="form-label">Login</label>
+      <div class="mb-3" prFormLabelValidation>
+        <label for="login" class="form-label" prFormLabel>Login</label>
         <input id="login" type="text" class="form-control" formControlName="login" />
         @if (loginCtrl.dirty && loginCtrl.hasError('required')) {
           <div class="invalid-feedback">Login is required</div>
         }
       </div>
-      <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
+      <div class="mb-3" prFormLabelValidation>
+        <label for="password" class="form-label" prFormLabel>Password</label>
         <input id="password" type="password" class="form-control" formControlName="password" />
         @if (passwordCtrl.dirty && passwordCtrl.hasError('required')) {
           <div class="invalid-feedback">Password is required</div>

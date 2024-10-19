@@ -4,11 +4,21 @@ import { UserService } from '../user.service';
 import { Router } from '@angular/router';
 import { BirthYearInputComponent } from '../birth-year-input/birth-year-input.component';
 import { AlertComponent } from '../alert/alert.component';
+import { FormControlValidationDirective } from '../form-control-validation.directive';
+import { FormLabelDirective } from '../form-label.directive';
+import { FormLabelValidationDirective } from '../form-label-validation.directive';
 
 @Component({
   selector: 'pr-register',
   standalone: true,
-  imports: [ReactiveFormsModule, BirthYearInputComponent, AlertComponent],
+  imports: [
+    ReactiveFormsModule,
+    FormLabelDirective,
+    FormLabelValidationDirective,
+    FormControlValidationDirective,
+    BirthYearInputComponent,
+    AlertComponent
+  ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })

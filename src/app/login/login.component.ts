@@ -3,11 +3,14 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { UserService } from '../user.service';
 import { Router } from '@angular/router';
 import { AlertComponent } from '../alert/alert.component';
+import { FormControlValidationDirective } from '../form-control-validation.directive';
+import { FormLabelDirective } from '../form-label.directive';
+import { FormLabelValidationDirective } from '../form-label-validation.directive';
 
 @Component({
   selector: 'pr-login',
   standalone: true,
-  imports: [ReactiveFormsModule, AlertComponent],
+  imports: [ReactiveFormsModule, FormLabelDirective, FormLabelValidationDirective, FormControlValidationDirective, AlertComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
