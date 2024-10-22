@@ -36,10 +36,12 @@ describe('Races', () => {
         startInstant: '2020-02-18T08:03:00Z'
       }
     ]).as('getPendingRaces');
-    cy.intercept('GET', 'api/races?status=FINISHED', [
-      {
-        id: 14,
-        name: 'Tokyo',
+    cy.intercept(
+      'GET',
+      'api/races?status=FINISHED',
+      Array.from({ length: 60 }, (_, i) => ({
+        id: i,
+        name: 'Tokyo ' + i,
         ponies: [
           { id: 11, name: 'Fast Rainbow', color: 'YELLOW' },
           { id: 12, name: 'Gentle Castle', color: 'ORANGE' },
@@ -48,8 +50,8 @@ describe('Races', () => {
           { id: 15, name: 'Great Soda', color: 'GREEN' }
         ],
         startInstant: '2020-02-18T08:01:00Z'
-      }
-    ]).as('getFinishedRaces');
+      }))
+    ).as('getFinishedRaces');
   }
 
   function storeUserInLocalStorage(): void {
@@ -104,7 +106,32 @@ describe('Races', () => {
     pendingRacesTab().should('not.have.class', 'active');
     finishedRacesTab().should('have.class', 'active');
 
-    cy.get('h2').should('have.length', 1);
-    cy.get('p').should('have.length', 1).and('contain', 'ago');
+    cy.get('h2').should('have.length', 10);
+    cy.get('h2').first().should('contain', 'Tokyo 0');
+    cy.get('p').should('have.length', 10);
+    cy.get('p').first().should('contain', 'ago');
+
+    // when we click on the third page
+    cy.get('.pagination .page-item').eq(3).click();
+    // then the URL contains the page number
+    cy.location('search').should('eq', '?page=3');
+
+    // and the page should display the correct races
+    cy.get('h2').should('have.length', 10);
+    cy.get('h2').first().should('contain', 'Tokyo 20');
+
+    // when we click on next
+    cy.get('.pagination .page-item').eq(7).click();
+    // then the URL contains the next page number
+    cy.location('search').should('eq', '?page=4');
+
+    // and the page should display the correct races
+    cy.get('h2').should('have.length', 10);
+    cy.get('h2').first().should('contain', 'Tokyo 30');
+
+    // when we click on previous
+    cy.get('.pagination .page-item').eq(0).click();
+    // then the URL contains the previous page number
+    cy.location('search').should('eq', '?page=3');
   });
 });

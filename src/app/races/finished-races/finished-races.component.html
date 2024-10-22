@@ -1,5 +1,9 @@
-@for (race of races; track race.id) {
-  <div>
-    <pr-race [raceModel]="race" />
-  </div>
+@if (vm) {
+  <ngb-pagination [collectionSize]="vm.total" [page]="vm.page" (pageChange)="changePage($event)" size="lg" />
+
+  @for (race of vm.races; track race.id) {
+    <div>
+      <pr-race [raceModel]="race" />
+    </div>
+  }
 }
