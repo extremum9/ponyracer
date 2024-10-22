@@ -3,10 +3,10 @@ import { AbstractControl, NonNullableFormBuilder, ReactiveFormsModule, Validatio
 import { UserService } from '../user.service';
 import { Router } from '@angular/router';
 import { BirthYearInputComponent } from '../birth-year-input/birth-year-input.component';
-import { AlertComponent } from '../alert/alert.component';
 import { FormControlValidationDirective } from '../form-control-validation.directive';
 import { FormLabelDirective } from '../form-label.directive';
 import { FormLabelValidationDirective } from '../form-label-validation.directive';
+import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'pr-register',
@@ -17,7 +17,7 @@ import { FormLabelValidationDirective } from '../form-label-validation.directive
     FormLabelValidationDirective,
     FormControlValidationDirective,
     BirthYearInputComponent,
-    AlertComponent
+    NgbAlert
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'

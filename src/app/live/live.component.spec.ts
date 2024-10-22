@@ -1,14 +1,14 @@
-import { booleanAttribute, Component, input, output } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { discardPeriodicTasks, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
+import { NgbAlert, NgbAlertConfig } from '@ng-bootstrap/ng-bootstrap';
 import { EMPTY, of, Subject } from 'rxjs';
 import { RaceService } from '../race.service';
 import { PonyModel, PonyWithPositionModel } from '../models/pony.model';
 import { RaceModel } from '../models/race.model';
 import { PonyComponent } from '../pony/pony.component';
-import { AlertComponent } from '../alert/alert.component';
 import { LiveComponent } from './live.component';
 
 @Component({
@@ -20,17 +20,6 @@ class PonyStubComponent {
   ponyModel = input.required<PonyModel>();
   isRunning = input(false);
   isBoosted = input(false);
-}
-
-@Component({
-  selector: 'pr-alert',
-  template: '<div><ng-content></ng-content></div>',
-  standalone: true
-})
-class AlertStubComponent {
-  type = input<'success' | 'danger' | 'warning'>();
-  dismissible = input(true, { transform: booleanAttribute });
-  closed = output<void>();
 }
 
 describe('LiveComponent', () => {
@@ -53,12 +42,15 @@ describe('LiveComponent', () => {
     });
     TestBed.overrideComponent(LiveComponent, {
       remove: {
-        imports: [PonyComponent, AlertComponent]
+        imports: [PonyComponent]
       },
       add: {
-        imports: [PonyStubComponent, AlertStubComponent]
+        imports: [PonyStubComponent]
       }
     });
+    // turn off the animation for the alert
+    const alertConfig = TestBed.inject(NgbAlertConfig);
+    alertConfig.animation = false;
   });
 
   it('should change the race status once the race is RUNNING', async () => {
@@ -293,15 +285,11 @@ describe('LiveComponent', () => {
 
     // an error occurred
     const debugElement = harness.routeDebugElement!;
-    const alert = debugElement.query(By.directive(AlertStubComponent));
-    expect(alert).withContext('You should have an AlertComponent to display the error').not.toBeNull();
+    const alert = debugElement.query(By.directive(NgbAlert));
+    expect(alert).withContext('You should have an NgbAlert to display the error').not.toBeNull();
     expect((alert.nativeElement as HTMLElement).textContent).toContain('A problem occurred during the live.');
-    expect((alert.componentInstance as AlertStubComponent).type())
-      .withContext('The alert should be a danger one')
-      .toBe('danger');
-    expect((alert.componentInstance as AlertStubComponent).dismissible())
-      .withContext('The alert should not be dismissible')
-      .toBe(false);
+    const alertComponent = alert.componentInstance as NgbAlert;
+    expect(alertComponent.type).withContext('The alert should be a danger one').toBe('danger');
   });
 
   it('should emit an event with the pony when a pony is clicked', async () => {

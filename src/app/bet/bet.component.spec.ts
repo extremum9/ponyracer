@@ -1,26 +1,14 @@
-import { booleanAttribute, Component, input, output } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
+import { NgbAlert, NgbAlertConfig } from '@ng-bootstrap/ng-bootstrap';
 import { of, throwError } from 'rxjs';
 import { formatDistanceToNowStrict, parseISO } from 'date-fns';
 import { RaceService } from '../race.service';
 import { PonyComponent } from '../pony/pony.component';
 import { RaceModel } from '../models/race.model';
 import { BetComponent } from './bet.component';
-import { AlertComponent } from '../alert/alert.component';
-
-@Component({
-  selector: 'pr-alert',
-  template: '<div><ng-content></ng-content></div>',
-  standalone: true
-})
-class AlertStubComponent {
-  type = input<'success' | 'danger' | 'warning'>();
-  dismissible = input(true, { transform: booleanAttribute });
-  closed = output<void>();
-}
 
 describe('BetComponent', () => {
   let raceService: jasmine.SpyObj<RaceService>;
@@ -42,14 +30,9 @@ describe('BetComponent', () => {
     TestBed.configureTestingModule({
       providers: [provideRouter([{ path: 'races/:raceId', component: BetComponent }]), { provide: RaceService, useValue: raceService }]
     });
-    TestBed.overrideComponent(BetComponent, {
-      remove: {
-        imports: [AlertComponent]
-      },
-      add: {
-        imports: [AlertStubComponent]
-      }
-    });
+    // turn off the animation for the alert
+    const alertConfig = TestBed.inject(NgbAlertConfig);
+    alertConfig.animation = false;
   });
 
   it('should display a race, its date and its ponies', async () => {
@@ -111,7 +94,7 @@ describe('BetComponent', () => {
     raceService.bet.and.callFake(() => throwError(() => new Error('Oops')));
 
     const debugElement = harness.routeDebugElement!;
-    expect(debugElement.query(By.directive(AlertStubComponent))).toBeNull();
+    expect(debugElement.query(By.directive(NgbAlert))).toBeNull();
 
     // bet on pony
     const ponies = debugElement.queryAll(By.directive(PonyComponent));
@@ -119,18 +102,17 @@ describe('BetComponent', () => {
     gentlePie.ponyClicked.emit(race.ponies[0]);
     harness.detectChanges();
 
-    const message = debugElement.query(By.directive(AlertStubComponent));
-    expect(message).withContext('You should have an AlertComponent if the bet failed').not.toBeNull();
+    const message = debugElement.query(By.directive(NgbAlert));
+    expect(message).withContext('You should have an NgbAlert if the bet failed').not.toBeNull();
     expect((message.nativeElement as HTMLElement).textContent).toContain('The race is already started or finished');
-    expect((message.componentInstance as AlertStubComponent).type())
-      .withContext('The alert should be a danger one')
-      .toBe('danger');
+    const alertComponent = message.componentInstance as NgbAlert;
+    expect(alertComponent.type).withContext('The alert should be a danger one').toBe('danger');
 
     // close the alert
-    (message.componentInstance as AlertStubComponent).closed.emit();
+    alertComponent.close().subscribe();
     harness.detectChanges();
-    expect(debugElement.query(By.directive(AlertStubComponent)))
-      .withContext('The AlertComponent should be closable')
+    expect(debugElement.query(By.directive(NgbAlert)))
+      .withContext('The NgbAlert should be closable')
       .toBeNull();
   });
 
@@ -167,7 +149,7 @@ describe('BetComponent', () => {
     raceService.cancelBet.and.callFake(() => throwError(() => new Error('Oops')));
 
     const debugElement = harness.routeDebugElement!;
-    expect(debugElement.query(By.directive(AlertStubComponent))).toBeNull();
+    expect(debugElement.query(By.directive(NgbAlert))).toBeNull();
 
     // cancel bet on pony
     const ponies = debugElement.queryAll(By.directive(PonyComponent));
@@ -179,12 +161,9 @@ describe('BetComponent', () => {
     // we should have no element with the `selected` class
     const selectedElements = harness.routeNativeElement!.querySelectorAll('.selected');
     expect(selectedElements.length).withContext('You should have an element with the `selected` class as the canceling failed').toBe(1);
-    const message = debugElement.query(By.directive(AlertStubComponent));
-    expect(message).withContext('You should have an AlertComponent if the bet failed').not.toBeNull();
+    const message = debugElement.query(By.directive(NgbAlert));
+    expect(message).withContext('You should have an NgbAlert if the bet failed').not.toBeNull();
     expect((message.nativeElement as HTMLElement).textContent).toContain('The race is already started or finished');
-    expect((message.componentInstance as AlertStubComponent).type())
-      .withContext('The alert should be a danger one')
-      .toBe('danger');
   });
 
   it('should display a link to go to live', async () => {

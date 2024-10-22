@@ -2,7 +2,7 @@
   <div class="col-md-6 offset-md-3">
     <h1>Log in</h1>
     @if (authenticationFailed) {
-      <pr-alert type="danger">Nope, try again.</pr-alert>
+      <ngb-alert type="danger">Nope, try again.</ngb-alert>
     }
     <form [formGroup]="userForm" (ngSubmit)="authenticate()">
       <div class="mb-3" prFormLabelValidation>

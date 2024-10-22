@@ -3,7 +3,7 @@
     <h1>Sign up</h1>
 
     @if (registrationFailed) {
-      <pr-alert type="danger">Try again with another login.</pr-alert>
+      <ngb-alert type="danger">Try again with another login.</ngb-alert>
     }
 
     <form [formGroup]="userForm" (ngSubmit)="register()">
