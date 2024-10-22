@@ -2,6 +2,7 @@ import { signal, WritableSignal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router, RouterLink } from '@angular/router';
 import { By } from '@angular/platform-browser';
+import { NgbCollapseConfig } from '@ng-bootstrap/ng-bootstrap';
 import { UserService } from '../user.service';
 import { UserModel } from '../models/user.model';
 import { MenuComponent } from './menu.component';
@@ -18,6 +19,9 @@ describe('MenuComponent', () => {
       providers: [provideRouter([]), { provide: UserService, useValue: userService }]
     });
     userService.scoreUpdates.and.returnValue(of());
+    // turn off the animation for the collapse
+    const collapseConfig = TestBed.inject(NgbCollapseConfig);
+    collapseConfig.animation = false;
   });
 
   it('should toggle the class on click', () => {
@@ -29,8 +33,8 @@ describe('MenuComponent', () => {
     const navbarCollapsed = element.querySelector('#navbar')!;
     expect(navbarCollapsed).withContext('No element with the id `#navbar`').not.toBeNull();
     expect(navbarCollapsed.classList)
-      .withContext('The element with the id `#navbar` should have the class `collapse`')
-      .toContain('collapse');
+      .withContext('The element with the id `#navbar` should use the `ngbCollapse` directive')
+      .not.toContain('show');
 
     const button = element.querySelector('button')!;
     expect(button).withContext('No `button` element to collapse the menu').not.toBeNull();
@@ -39,9 +43,7 @@ describe('MenuComponent', () => {
     fixture.detectChanges();
 
     const navbar = element.querySelector('#navbar')!;
-    expect(navbar.classList)
-      .withContext('The element with the id `#navbar` should have not the class `collapse` after a click')
-      .not.toContain('collapse');
+    expect(navbar.classList).withContext('The element with the id `#navbar` should use the `ngbCollapse` directive').toContain('show');
   });
 
   it('should use routerLink to navigate', () => {
