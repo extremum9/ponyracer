@@ -1,6 +1,7 @@
 import { Route } from '@angular/router';
 import { LoginComponent } from '../login/login.component';
 import { RegisterComponent } from '../register/register.component';
+import { MoneyHistoryComponent } from '../money-history/money-history.component';
 
 export const usersRoutes: Route[] = [
   {
@@ -10,5 +11,9 @@ export const usersRoutes: Route[] = [
   {
     path: 'register',
     component: RegisterComponent
+  },
+  {
+    path: 'money/history',
+    component: MoneyHistoryComponent
   }
 ];

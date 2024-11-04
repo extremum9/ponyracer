@@ -3,10 +3,10 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router, RouterLink } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { NgbCollapseConfig } from '@ng-bootstrap/ng-bootstrap';
+import { of, Subject } from 'rxjs';
 import { UserService } from '../user.service';
 import { UserModel } from '../models/user.model';
 import { MenuComponent } from './menu.component';
-import { of, Subject } from 'rxjs';
 
 describe('MenuComponent', () => {
   let currentUser: WritableSignal<UserModel | null>;
@@ -58,7 +58,9 @@ describe('MenuComponent', () => {
     fixture.detectChanges();
 
     const linksAfterLogin = fixture.debugElement.queryAll(By.directive(RouterLink));
-    expect(linksAfterLogin.length).withContext('You should have two routerLink: one to the races, one to the home').toBe(2);
+    expect(linksAfterLogin.length)
+      .withContext('You should have three routerLink: one to the races, one to the home, one to the money history when the user is logged')
+      .toBe(3);
   });
 
   it('should display the user if logged in', () => {
