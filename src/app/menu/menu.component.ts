@@ -1,4 +1,4 @@
-import { Component, Signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../user.service';
 import { UserModel } from '../models/user.model';
@@ -12,7 +12,8 @@ import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
   standalone: true,
   imports: [RouterLink, DecimalPipe, NgbCollapse],
   templateUrl: './menu.component.html',
-  styleUrl: './menu.component.css'
+  styleUrl: './menu.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MenuComponent {
   public navbarCollapsed = true;
