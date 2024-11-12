@@ -1,4 +1,4 @@
-@if (vm) {
+@if (vm$ | async; as vm) {
   <ngb-pagination [collectionSize]="vm.total" [page]="vm.page" (pageChange)="changePage($event)" size="lg" />
 
   @for (race of vm.races; track race.id) {
