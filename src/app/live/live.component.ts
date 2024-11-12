@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { RaceModel } from '../models/race.model';
 import { RaceService } from '../race.service';
 import { ActivatedRoute } from '@angular/router';
@@ -14,7 +14,8 @@ import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
   standalone: true,
   imports: [FromNowPipe, PonyComponent, NgbAlert],
   templateUrl: './live.component.html',
-  styleUrl: './live.component.css'
+  styleUrl: './live.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LiveComponent {
   public raceModel: RaceModel | null = null;
@@ -25,6 +26,7 @@ export class LiveComponent {
   public readonly clickSubject = new Subject<PonyWithPositionModel>();
 
   constructor(
+    private _ref: ChangeDetectorRef,
     private _raceService: RaceService,
     private _route: ActivatedRoute
   ) {
@@ -32,7 +34,10 @@ export class LiveComponent {
     this._raceService
       .get(raceId)
       .pipe(
-        tap(race => (this.raceModel = race)),
+        tap(race => {
+          this.raceModel = race;
+          this._ref.markForCheck();
+        }),
         filter(race => race.status !== 'FINISHED'),
         switchMap(race => this._raceService.live(race.id)),
         takeUntilDestroyed()
@@ -41,12 +46,17 @@ export class LiveComponent {
         next: positions => {
           this.raceModel!.status = 'RUNNING';
           this.poniesWithPosition = positions;
+          this._ref.markForCheck();
         },
-        error: () => (this.error = true),
+        error: () => {
+          this.error = true;
+          this._ref.markForCheck();
+        },
         complete: () => {
           this.raceModel!.status = 'FINISHED';
           this.winners = this.poniesWithPosition.filter(pony => pony.position >= 100);
           this.betWon = this.winners.some(pony => pony.id === this.raceModel?.betPonyId);
+          this._ref.markForCheck();
         }
       });
 
