@@ -5,6 +5,7 @@ import { RouterTestingHarness } from '@angular/router/testing';
 import { Location } from '@angular/common';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
+import { provideI18nTesting } from '../../i18n-test';
 import { RaceService } from '../race.service';
 import { UserService } from '../user.service';
 import { UserModel } from '../models/user.model';
@@ -17,7 +18,12 @@ describe('RacesComponent', () => {
     const raceService = jasmine.createSpyObj<RaceService>('RaceService', ['list']);
     const userService = jasmine.createSpyObj<UserService>('UserService', [], { currentUser: signal({} as UserModel) });
     TestBed.configureTestingModule({
-      providers: [provideRouter(routes), { provide: RaceService, useValue: raceService }, { provide: UserService, useValue: userService }]
+      providers: [
+        provideI18nTesting(),
+        provideRouter(routes),
+        { provide: RaceService, useValue: raceService },
+        { provide: UserService, useValue: userService }
+      ]
     });
     raceService.list.and.returnValue(of([]));
   });

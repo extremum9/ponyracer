@@ -4,10 +4,11 @@ import { RaceService } from '../../race.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RaceComponent } from '../../race/race.component';
 import { RouterLink } from '@angular/router';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   standalone: true,
-  imports: [RouterLink, RaceComponent],
+  imports: [RouterLink, RaceComponent, TranslocoDirective],
   templateUrl: './pending-races.component.html',
   styleUrl: './pending-races.component.css'
 })

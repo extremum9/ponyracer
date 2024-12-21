@@ -164,4 +164,13 @@ describe('Ponyracer', () => {
     // and home page offers the login link
     cy.get('.btn-primary').contains('Login').should('have.attr', 'href', '/users/login');
   });
+
+  it('should change the language and persist it', () => {
+    cy.visit('/');
+    cy.get('[aria-label=Language]').select('fr');
+    cy.contains('small', 'Toujours un plaisir de parier sur des poneys');
+
+    cy.reload();
+    cy.contains('small', 'Toujours un plaisir de parier sur des poneys');
+  });
 });

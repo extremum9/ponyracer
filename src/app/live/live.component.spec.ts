@@ -5,6 +5,7 @@ import { RouterTestingHarness } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
 import { NgbAlert, NgbAlertConfig } from '@ng-bootstrap/ng-bootstrap';
 import { EMPTY, of, Subject } from 'rxjs';
+import { provideI18nTesting } from '../../i18n-test';
 import { RaceService } from '../race.service';
 import { PonyModel, PonyWithPositionModel } from '../models/pony.model';
 import { RaceModel } from '../models/race.model';
@@ -36,6 +37,7 @@ describe('LiveComponent', () => {
     raceService = jasmine.createSpyObj<RaceService>('RaceService', ['get', 'live', 'boost']);
     TestBed.configureTestingModule({
       providers: [
+        provideI18nTesting(),
         provideRouter([{ path: 'races/:raceId/live', component: LiveComponent }]),
         { provide: RaceService, useValue: raceService }
       ]

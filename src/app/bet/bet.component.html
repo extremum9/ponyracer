@@ -1,12 +1,14 @@
-@if (raceModel) {
-  @if (betFailed) {
-    <ngb-alert class="mb-3" type="danger" (closed)="betFailed = false">The race is already started or finished</ngb-alert>
-  }
-  <div>
+<ng-container *transloco="let t">
+  @if (raceModel) {
     <h1>{{ raceModel.name }}</h1>
     <p>{{ raceModel.startInstant | fromNow }}</p>
-    <a class="btn btn-primary" [routerLink]="['/races', raceModel.id, 'live']">Watch live!</a>
-    <div class="py-2">Click to bet on your favorite pony</div>
+    <a class="btn btn-primary" [routerLink]="['/races', raceModel.id, 'live']">{{ t('bet.watch-live') }}</a>
+
+    @if (betFailed) {
+      <ngb-alert type="danger" (closed)="betFailed = false">{{ t('bet.started-or-finished') }}</ngb-alert>
+    }
+
+    <div class="py-2">{{ t('bet.click-to-bet') }}</div>
     <div class="row">
       @for (pony of raceModel.ponies; track pony.id) {
         <div class="col-12 col-md-2" [class.selected]="isPonySelected(pony)">
@@ -14,5 +16,5 @@
         </div>
       }
     </div>
-  </div>
-}
+  }
+</ng-container>

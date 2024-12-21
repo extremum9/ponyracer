@@ -7,6 +7,7 @@ import { FormControlValidationDirective } from '../form-control-validation.direc
 import { FormLabelDirective } from '../form-label.directive';
 import { FormLabelValidationDirective } from '../form-label-validation.directive';
 import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'pr-register',
@@ -17,19 +18,18 @@ import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
     FormLabelValidationDirective,
     FormControlValidationDirective,
     BirthYearInputComponent,
-    NgbAlert
+    NgbAlert,
+    TranslocoDirective
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
   private _fb = inject(NonNullableFormBuilder);
-  public registrationFailed = false;
   public loginCtrl = this._fb.control('', [Validators.required, Validators.minLength(3)]);
   public passwordCtrl = this._fb.control('', Validators.required);
   public confirmPasswordCtrl = this._fb.control('', Validators.required);
   public birthYearCtrl = this._fb.control<number | null>(null, [Validators.required]);
-
   public passwordGroup = this._fb.group(
     {
       password: this.passwordCtrl,
@@ -37,12 +37,12 @@ export class RegisterComponent {
     },
     { validators: RegisterComponent.passwordMatch }
   );
-
   public userForm = this._fb.group({
     login: this.loginCtrl,
     passwordForm: this.passwordGroup,
     birthYear: this.birthYearCtrl
   });
+  public registrationFailed = false;
 
   constructor(
     private _router: Router,

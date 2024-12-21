@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { NgbAlert, NgbAlertConfig } from '@ng-bootstrap/ng-bootstrap';
 import { of, throwError } from 'rxjs';
 import { formatDistanceToNowStrict, parseISO } from 'date-fns';
+import { provideI18nTesting } from '../../i18n-test';
 import { RaceService } from '../race.service';
 import { PonyComponent } from '../pony/pony.component';
 import { RaceModel } from '../models/race.model';
@@ -28,7 +29,11 @@ describe('BetComponent', () => {
   beforeEach(() => {
     raceService = jasmine.createSpyObj<RaceService>('RaceService', ['get', 'bet', 'cancelBet']);
     TestBed.configureTestingModule({
-      providers: [provideRouter([{ path: 'races/:raceId', component: BetComponent }]), { provide: RaceService, useValue: raceService }]
+      providers: [
+        provideI18nTesting(),
+        provideRouter([{ path: 'races/:raceId', component: BetComponent }]),
+        { provide: RaceService, useValue: raceService }
+      ]
     });
     // turn off the animation for the alert
     const alertConfig = TestBed.inject(NgbAlertConfig);

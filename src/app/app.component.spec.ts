@@ -3,14 +3,16 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
+import { provideI18nTesting } from '../i18n-test';
 import { AppComponent } from './app.component';
 import { MenuComponent } from './menu/menu.component';
 import { WsService } from './ws.service';
 
 describe('AppComponent', () => {
-  beforeEach(() =>
+  beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        provideI18nTesting('fr'),
         provideHttpClient(),
         provideHttpClientTesting(),
         provideRouter([]),
@@ -19,8 +21,8 @@ describe('AppComponent', () => {
           useValue: jasmine.createSpyObj<WsService>('WsService', ['connect'])
         }
       ]
-    })
-  );
+    });
+  });
 
   it('should have a router outlet', () => {
     const fixture = TestBed.createComponent(AppComponent);

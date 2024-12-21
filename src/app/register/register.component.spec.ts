@@ -3,6 +3,7 @@ import { provideRouter, Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { NgbAlert, NgbAlertConfig } from '@ng-bootstrap/ng-bootstrap';
 import { of, throwError } from 'rxjs';
+import { provideI18nTesting } from '../../i18n-test';
 import { UserService } from '../user.service';
 import { UserModel } from '../models/user.model';
 import { RegisterComponent } from './register.component';
@@ -13,7 +14,7 @@ describe('RegisterComponent', () => {
   beforeEach(() => {
     userService = jasmine.createSpyObj<UserService>('UserService', ['register']);
     TestBed.configureTestingModule({
-      providers: [provideRouter([]), { provide: UserService, useValue: userService }]
+      providers: [provideI18nTesting(), provideRouter([]), { provide: UserService, useValue: userService }]
     });
     // turn off the animation for the alert
     const alertConfig = TestBed.inject(NgbAlertConfig);

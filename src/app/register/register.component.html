@@ -1,59 +1,61 @@
-<div class="row">
-  <div class="col-md-6 offset-md-3">
-    <h1>Sign up</h1>
+<ng-container *transloco="let t">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <h1>{{ t('register.title') }}</h1>
 
-    @if (registrationFailed) {
-      <ngb-alert type="danger">Try again with another login.</ngb-alert>
-    }
+      @if (registrationFailed) {
+        <ngb-alert type="danger">{{ t('register.failed') }}</ngb-alert>
+      }
 
-    <form [formGroup]="userForm" (ngSubmit)="register()">
-      <div class="mb-3" prFormLabelValidation>
-        <label for="login" class="form-label" prFormLabel>Login</label>
-        <input id="login" type="text" class="form-control" formControlName="login" />
-        @if (loginCtrl.dirty) {
-          @if (loginCtrl.hasError('required')) {
-            <div id="login-required-error" class="invalid-feedback">Login is required</div>
-          } @else if (loginCtrl.hasError('minlength')) {
+      <form (ngSubmit)="register()" [formGroup]="userForm">
+        <div class="mb-3" prFormLabelValidation>
+          <label for="login" class="form-label" prFormLabel>{{ t('register.login') }}</label>
+          <input id="login" class="form-control" formControlName="login" />
+          @if (loginCtrl.dirty && loginCtrl.hasError('required')) {
+            <div id="login-required-error" class="invalid-feedback">{{ t('register.login-required') }}</div>
+          } @else if (loginCtrl.dirty && loginCtrl.hasError('minlength')) {
             <div id="login-length-error" class="invalid-feedback">
-              Your login should be at least {{ loginCtrl.getError('minlength').requiredLength }} characters
+              {{ t('register.login-too-short', { length: loginCtrl.getError('minlength').requiredLength }) }}
             </div>
           }
-        }
-      </div>
+        </div>
 
-      <div formGroupName="passwordForm">
-        <div class="mb-3" prFormLabelValidation>
-          <label for="password" class="form-label" prFormLabel>Password</label>
-          <input id="password" class="form-control" type="password" formControlName="password" />
-          @if (passwordCtrl.dirty && passwordCtrl.hasError('required')) {
-            <div id="password-required-error" class="invalid-feedback">Password is required</div>
+        <div formGroupName="passwordForm">
+          <div class="mb-3" prFormLabelValidation>
+            <label for="password" class="form-label" prFormLabel>{{ t('register.password') }}</label>
+            <input id="password" class="form-control" type="password" formControlName="password" />
+            @if (passwordCtrl.dirty && passwordCtrl.hasError('required')) {
+              <div id="password-required-error" class="invalid-feedback">{{ t('register.password-required') }}</div>
+            }
+          </div>
+
+          <div class="mb-3" prFormLabelValidation>
+            <label for="confirm" class="form-label" prFormLabel>{{ t('register.confirm') }}</label>
+            <input id="confirm" class="form-control" type="password" formControlName="confirmPassword" />
+            @if (confirmPasswordCtrl.dirty && confirmPasswordCtrl.hasError('required')) {
+              <div id="confirm-password-required-error" class="invalid-feedback">{{ t('register.confirm-required') }}</div>
+            }
+          </div>
+
+          @if (passwordGroup.dirty && passwordGroup.hasError('matchingError')) {
+            <div id="password-matching-error" class="invalid-feedback">{{ t('register.matching-error') }}</div>
           }
         </div>
+
         <div class="mb-3" prFormLabelValidation>
-          <label for="confirm" class="form-label" prFormLabel>Confirm password</label>
-          <input id="confirm" type="password" class="form-control" formControlName="confirmPassword" />
-          @if (confirmPasswordCtrl.dirty && confirmPasswordCtrl.hasError('required')) {
-            <div id="confirm-password-required-error" class="invalid-feedback">Password confirmation is required</div>
+          <label for="birth-year" class="form-label" prFormLabel>{{ t('register.birth-year') }}</label>
+          <pr-birth-year-input inputId="birth-year" formControlName="birthYear" />
+          @if (birthYearCtrl.dirty) {
+            @if (birthYearCtrl.hasError('required')) {
+              <div id="birth-year-required-error" class="invalid-feedback">{{ t('register.birth-year-required') }}</div>
+            } @else if (birthYearCtrl.hasError('invalidYear')) {
+              <div id="birth-year-invalid-error" class="invalid-feedback">{{ t('register.birth-year-invalid') }}</div>
+            }
           }
         </div>
-        @if (passwordGroup.dirty && passwordGroup.hasError('matchingError')) {
-          <div id="password-matching-error" class="invalid-feedback">Your password does not match</div>
-        }
-      </div>
 
-      <div class="mb-3" prFormLabelValidation>
-        <label for="birth-year" class="form-label" prFormLabel>Birth year</label>
-        <pr-birth-year-input inputId="birth-year" formControlName="birthYear" />
-        @if (birthYearCtrl.dirty) {
-          @if (birthYearCtrl.hasError('required')) {
-            <div id="birth-year-required-error" class="invalid-feedback">Birth year is required</div>
-          } @else if (birthYearCtrl.hasError('invalidYear')) {
-            <div id="birth-year-invalid-error" class="invalid-feedback">This is not a valid year</div>
-          }
-        }
-      </div>
-
-      <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid">Sign me up!</button>
-    </form>
+        <button class="btn btn-primary" type="submit" [disabled]="userForm.invalid">{{ t('register.submit') }}</button>
+      </form>
+    </div>
   </div>
-</div>
+</ng-container>

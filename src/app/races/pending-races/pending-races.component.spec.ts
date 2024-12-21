@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
+import { provideI18nTesting } from '../../../i18n-test';
 import { RaceModel } from '../../models/race.model';
 import { RaceComponent } from '../../race/race.component';
 import { RaceService } from '../../race.service';
@@ -13,7 +14,7 @@ describe('PendingRacesComponent', () => {
   beforeEach(() => {
     raceService = jasmine.createSpyObj<RaceService>('RaceService', ['list']);
     TestBed.configureTestingModule({
-      providers: [provideRouter([]), { provide: RaceService, useValue: raceService }]
+      providers: [provideI18nTesting(), provideRouter([]), { provide: RaceService, useValue: raceService }]
     });
     raceService.list.and.returnValue(
       of([
