@@ -1,6 +1,8 @@
-@for (race of races; track race.id) {
-  <div>
-    <pr-race [raceModel]="race" />
-    <a class="btn btn-primary" [routerLink]="['/races', race.id]">Bet on {{ race.name }}</a>
-  </div>
-}
+<ng-container *transloco="let t">
+  @for (race of races; track race.id) {
+    <div>
+      <pr-race [raceModel]="race" />
+      <a [routerLink]="['/races', race.id]" class="btn btn-primary mb-2">{{ t('pending-races.bet', { name: race.name }) }}</a>
+    </div>
+  }
+</ng-container>

@@ -8,11 +8,12 @@ import { PonyComponent } from '../pony/pony.component';
 import { bufferToggle, catchError, EMPTY, filter, groupBy, interval, map, mergeMap, Subject, switchMap, tap, throttleTime } from 'rxjs';
 import { FromNowPipe } from '../from-now.pipe';
 import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'pr-live',
   standalone: true,
-  imports: [FromNowPipe, PonyComponent, NgbAlert],
+  imports: [FromNowPipe, PonyComponent, NgbAlert, TranslocoDirective],
   templateUrl: './live.component.html',
   styleUrl: './live.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush

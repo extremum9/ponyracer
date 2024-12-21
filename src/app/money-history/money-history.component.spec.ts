@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Chart } from 'chart.js';
 import { Subject } from 'rxjs';
+import { provideI18nTesting } from '../../i18n-test';
 import { UserService } from '../user.service';
 import { MoneyHistoryModel } from '../models/money-history.model';
 import { MoneyHistoryComponent } from './money-history.component';
@@ -10,7 +11,7 @@ describe('MoneyHistoryComponent', () => {
 
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [{ provide: UserService, useValue: userService }]
+      providers: [provideI18nTesting(), { provide: UserService, useValue: userService }]
     })
   );
 

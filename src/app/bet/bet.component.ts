@@ -8,11 +8,12 @@ import { FromNowPipe } from '../from-now.pipe';
 import { PonyComponent } from '../pony/pony.component';
 import { PonyModel } from '../models/pony.model';
 import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'pr-bet',
   standalone: true,
-  imports: [RouterLink, FromNowPipe, PonyComponent, NgbAlert],
+  imports: [RouterLink, FromNowPipe, PonyComponent, NgbAlert, TranslocoDirective],
   templateUrl: './bet.component.html',
   styleUrl: './bet.component.css'
 })

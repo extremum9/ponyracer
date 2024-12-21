@@ -1,12 +1,14 @@
-<h1>Races</h1>
+<ng-container *transloco="let t">
+  <h1>{{ t('races.title') }}</h1>
 
-<ul class="nav nav-tabs mb-4">
-  <li class="nav-item">
-    <a class="nav-link" routerLink="pending" routerLinkActive="active">Pending races</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" routerLink="finished" routerLinkActive="active">Finished races</a>
-  </li>
-</ul>
+  <ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="pending">{{ t('races.pending') }}</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="finished">{{ t('races.finished') }}</a>
+    </li>
+  </ul>
 
-<router-outlet />
+  <router-outlet />
+</ng-container>

@@ -1,25 +1,31 @@
-<div class="row">
-  <div class="col-md-6 offset-md-3">
-    <h1>Log in</h1>
-    @if (authenticationFailed) {
-      <ngb-alert type="danger">Nope, try again.</ngb-alert>
-    }
-    <form [formGroup]="userForm" (ngSubmit)="authenticate()">
-      <div class="mb-3" prFormLabelValidation>
-        <label for="login" class="form-label" prFormLabel>Login</label>
-        <input id="login" type="text" class="form-control" formControlName="login" />
-        @if (loginCtrl.dirty && loginCtrl.hasError('required')) {
-          <div class="invalid-feedback">Login is required</div>
-        }
-      </div>
-      <div class="mb-3" prFormLabelValidation>
-        <label for="password" class="form-label" prFormLabel>Password</label>
-        <input id="password" type="password" class="form-control" formControlName="password" />
-        @if (passwordCtrl.dirty && passwordCtrl.hasError('required')) {
-          <div class="invalid-feedback">Password is required</div>
-        }
-      </div>
-      <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid">Log me in!</button>
-    </form>
+<ng-container *transloco="let t">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <h1>{{ t('login.title') }}</h1>
+
+      @if (authenticationFailed) {
+        <ngb-alert type="danger">{{ t('login.failed') }}</ngb-alert>
+      }
+
+      <form (ngSubmit)="authenticate()" [formGroup]="userForm">
+        <div class="mb-3" prFormLabelValidation>
+          <label for="login" class="form-label" prFormLabel>{{ t('login.login') }}</label>
+          <input id="login" class="form-control" formControlName="login" />
+          @if (loginCtrl.dirty && loginCtrl.hasError('required')) {
+            <div class="invalid-feedback">{{ t('login.login-required') }}</div>
+          }
+        </div>
+
+        <div class="mb-3" prFormLabelValidation>
+          <label for="password" class="form-label" prFormLabel>{{ t('login.password') }}</label>
+          <input id="password" class="form-control" type="password" formControlName="password" />
+          @if (passwordCtrl.dirty && passwordCtrl.hasError('required')) {
+            <div class="invalid-feedback">{{ t('login.password-required') }}</div>
+          }
+        </div>
+
+        <button class="btn btn-primary" type="submit" [disabled]="userForm.invalid">{{ t('login.submit') }}</button>
+      </form>
+    </div>
   </div>
-</div>
+</ng-container>

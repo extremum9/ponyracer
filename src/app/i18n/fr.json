@@ -1,0 +1,77 @@
+{
+  "home": {
+    "subtitle": "Toujours un plaisir de parier sur des poneys",
+    "login": "Connexion",
+    "register": "Enregistrement",
+    "races": "Courses",
+    "ad": {
+      "application": "Cette application est celle que tu construiras grâce au Pro Pack Angular de Ninja Squad.",
+      "interesting": "Intéressant\u00a0?",
+      "before-books-link": "Visite",
+      "after-books-link": "pour plus de détails\u00a0!",
+      "before-propack-link": "Ou",
+      "propack-link": "essaye les premiers exercices gratuitement\u00a0!"
+    }
+  },
+  "about": {
+    "book-title": "Deviens un Ninja avec Angular"
+  },
+  "bet": {
+    "watch-live": "La course en direct\u00a0!",
+    "started-or-finished": "La course est déjà en cours ou terminée",
+    "click-to-bet": "Clique pour parier sur ton poney favori"
+  },
+  "live": {
+    "error": "Un problème s'est produit pendant le direct.",
+    "done": "La course est terminée.",
+    "won": "Tu as gagné ton pari\u00a0!",
+    "lost": "Tu as perdu ton pari.",
+    "winners": "Les poneys gagnants",
+    "pending": "La course va commencer {{ when }}",
+    "boost": "Clique très rapidement sur ton poney favori pour l'encourager"
+  },
+  "login": {
+    "title": "Connexion",
+    "failed": "Non, essaie encore.",
+    "login": "Identifiant",
+    "login-required": "L'identifiant est obligatoire",
+    "password": "Mot de passe",
+    "password-required": "Le mot de passe est obligatoire",
+    "submit": "Connecte-moi\u00a0!"
+  },
+  "menu": {
+    "toggle": "Afficher/Masquer",
+    "races": "Courses",
+    "about": "À propos",
+    "propack": "Jetez un oeil à notre pack pro",
+    "logout": "Déconnexion",
+    "language": "Langue"
+  },
+  "money-history": {
+    "title": "Historique du score"
+  },
+  "pending-races": {
+    "bet": "Parier sur {{ name }}"
+  },
+  "races": {
+    "title": "Courses",
+    "pending": "Courses futures",
+    "finished": "Courses terminées"
+  },
+  "register": {
+    "title": "Enregistrement",
+    "failed": "Essaie avec un autre identifiant.",
+    "login": "Identifiant",
+    "login-required": "L'identifiant est obligatoire",
+    "login-too-short": "L'identifiant doit contenir au moins {{ length }} caractères",
+    "password": "Mot de passe",
+    "password-required": "Le mot de passe est obligatoire",
+    "confirm": "Confirmation du mot de passe",
+    "confirm-required": "La confirmation du mot de passe est obligatoire",
+    "matching-error": "Les mots de passe ne sont pas identiques",
+    "birth-year": "Année de naissance",
+    "birth-year-required": "L'année de naissance est obligatoire",
+    "birth-year-invalid": "Ceci n'est pas une année valide",
+    "submit": "Allons-y\u00a0!"
+  }
+}
