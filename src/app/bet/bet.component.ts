@@ -4,7 +4,7 @@ import { startWith, Subject, switchMap } from 'rxjs';
 import { RaceService } from '../race.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { FromNowPipe } from '../from-now.pipe';
+import { FromNowPipe } from '../from-now-pipe/from-now.pipe';
 import { PonyComponent } from '../pony/pony.component';
 import { PonyModel } from '../models/pony.model';
 import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';

@@ -6,7 +6,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PonyWithPositionModel } from '../models/pony.model';
 import { PonyComponent } from '../pony/pony.component';
 import { bufferToggle, catchError, EMPTY, filter, groupBy, interval, map, mergeMap, Subject, switchMap, tap, throttleTime } from 'rxjs';
-import { FromNowPipe } from '../from-now.pipe';
+import { FromNowPipe } from '../from-now-pipe/from-now.pipe';
 import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
 import { TranslocoDirective } from '@jsverse/transloco';
 

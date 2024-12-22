@@ -1,7 +1,7 @@
 import { formatDistanceToNowStrict, parseISO } from 'date-fns';
 import { TestBed } from '@angular/core/testing';
 import { enUS, fr } from 'date-fns/locale';
-import { provideI18nTesting } from '../i18n-test';
+import { provideI18nTesting } from '../../i18n-test';
 import { FromNowPipe } from './from-now.pipe';
 
 describe('FromNowPipe', () => {
