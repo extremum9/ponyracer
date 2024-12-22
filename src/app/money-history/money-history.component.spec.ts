@@ -16,20 +16,20 @@ describe('MoneyHistoryComponent', () => {
   );
 
   it('should display a chart', () => {
-    const history$ = new Subject<Array<MoneyHistoryModel>>();
+    const history$ = new Subject<MoneyHistoryModel[]>();
     userService.getMoneyHistory.and.returnValue(history$);
     const fixture = TestBed.createComponent(MoneyHistoryComponent);
     fixture.detectChanges();
     const history = [
       { instant: '2017-08-03T10:40:00Z', money: 10000 },
       { instant: '2017-08-04T09:15:00Z', money: 9800 }
-    ] as Array<MoneyHistoryModel>;
+    ] as MoneyHistoryModel[];
     history$.next(history);
     fixture.detectChanges();
 
     expect(userService.getMoneyHistory).toHaveBeenCalled();
 
-    const element = fixture.nativeElement as HTMLElement;
+    const element: HTMLElement = fixture.nativeElement;
     expect(element.querySelector('h1')!.textContent).toContain('Money history');
 
     const chart = Chart.getChart(element.querySelector('canvas')!);

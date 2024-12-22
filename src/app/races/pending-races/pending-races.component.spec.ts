@@ -20,7 +20,7 @@ describe('PendingRacesComponent', () => {
       of([
         { id: 1, name: 'Lyon', startInstant: '2024-02-18T08:02:00' },
         { id: 2, name: 'Los Angeles', startInstant: '2024-02-18T08:03:00' }
-      ] as Array<RaceModel>)
+      ] as RaceModel[])
     );
   });
 
@@ -37,7 +37,7 @@ describe('PendingRacesComponent', () => {
     const fixture = TestBed.createComponent(PendingRacesComponent);
     fixture.detectChanges();
 
-    const element = fixture.nativeElement as HTMLElement;
+    const element: HTMLElement = fixture.nativeElement;
     const raceNames = element.querySelectorAll('a');
     expect(raceNames.length).withContext('You must have a link to go to the bet page for each race').toBe(2);
     expect(raceNames[0].textContent).toContain('Bet on Lyon');

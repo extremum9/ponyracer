@@ -50,12 +50,14 @@ describe('BetComponent', () => {
 
     // then we should have the name and ponies displayed in the template
     const ponies = harness.routeDebugElement!.queryAll(By.directive(PonyComponent));
-    expect(ponies).withContext('You should use the PonyComponent in your template to display the ponies').not.toBeNull();
-    expect(ponies.length).withContext('You should have five pony components in your template').toBe(5);
+    expect(ponies).withContext('You should use PonyComponent in your template to display the ponies').not.toBeNull();
+    expect(ponies.length).withContext('You should have five PonyComponent in your template').toBe(5);
+
     const element = harness.routeNativeElement!;
     const raceName = element.querySelector('h1')!;
-    expect(raceName).withContext('You need an h1 element for the race name').not.toBeNull();
-    expect(raceName.textContent).withContext('The h1 element should contain the race name').toContain('Paris');
+    expect(raceName).withContext('You need an `h1` element for the race name').not.toBeNull();
+    expect(raceName.textContent).withContext('The `h1` element should contain the race name').toContain('Paris');
+
     const startInstant = element.querySelector('p')!;
     expect(startInstant).withContext('You should use a `p` element to display the start instant').not.toBeNull();
     expect(startInstant.textContent)
@@ -82,6 +84,7 @@ describe('BetComponent', () => {
     harness.detectChanges();
 
     expect(raceService.bet).toHaveBeenCalledWith(12, 1);
+
     // we should have an element with the `selected` class
     const selectedElements = harness.routeNativeElement!.querySelectorAll('.selected');
     expect(selectedElements.length).withContext('You should have a div with the `selected` class').toBe(1);
@@ -108,8 +111,9 @@ describe('BetComponent', () => {
     harness.detectChanges();
 
     const message = debugElement.query(By.directive(NgbAlert));
-    expect(message).withContext('You should have an NgbAlert if the bet failed').not.toBeNull();
+    expect(message).withContext('You should have NgbAlert if the bet failed').not.toBeNull();
     expect((message.nativeElement as HTMLElement).textContent).toContain('The race is already started or finished');
+
     const alertComponent = message.componentInstance as NgbAlert;
     expect(alertComponent.type).withContext('The alert should be a danger one').toBe('danger');
 
@@ -117,7 +121,7 @@ describe('BetComponent', () => {
     alertComponent.close().subscribe();
     harness.detectChanges();
     expect(debugElement.query(By.directive(NgbAlert)))
-      .withContext('The NgbAlert should be closable')
+      .withContext('The alert should be closable')
       .toBeNull();
   });
 
@@ -163,11 +167,13 @@ describe('BetComponent', () => {
     harness.detectChanges();
 
     expect(raceService.cancelBet).toHaveBeenCalledWith(12);
+
     // we should have no element with the `selected` class
     const selectedElements = harness.routeNativeElement!.querySelectorAll('.selected');
     expect(selectedElements.length).withContext('You should have an element with the `selected` class as the canceling failed').toBe(1);
+
     const message = debugElement.query(By.directive(NgbAlert));
-    expect(message).withContext('You should have an NgbAlert if the bet failed').not.toBeNull();
+    expect(message).withContext('You should have NgbAlert if the bet failed').not.toBeNull();
     expect((message.nativeElement as HTMLElement).textContent).toContain('The race is already started or finished');
   });
 

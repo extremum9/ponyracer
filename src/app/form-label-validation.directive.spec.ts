@@ -30,7 +30,7 @@ class FormComponent {
 describe('FormLabelValidationDirective', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
-  it('should call the setValidity method from the FormLabelDirective on status change', () => {
+  it('should call the setValidity method from FormLabelDirective on status change', () => {
     const fixture = TestBed.createComponent(FormComponent);
     fixture.detectChanges();
 

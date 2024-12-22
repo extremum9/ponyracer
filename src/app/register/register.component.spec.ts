@@ -25,9 +25,10 @@ describe('RegisterComponent', () => {
     const fixture = TestBed.createComponent(RegisterComponent);
     fixture.detectChanges();
 
-    const element = fixture.nativeElement as HTMLElement;
+    const element: HTMLElement = fixture.nativeElement;
     const button = element.querySelector('button')!;
     expect(button.getAttribute('disabled')).withContext('Your submit button should be disabled if the form is invalid').not.toBeNull();
+
     const login = element.querySelector('input')!;
     expect(login).withContext('Your template should have an input for the login').not.toBeNull();
     login.value = 'Cédric';
@@ -145,7 +146,7 @@ describe('RegisterComponent', () => {
     expect(button.getAttribute('disabled')).withContext('Your submit button should not be disabled if the form is invalid').toBeNull();
   });
 
-  it('should call the user service to register', () => {
+  it('should call UserService to register', () => {
     const router = TestBed.inject(Router);
     spyOn(router, 'navigateByUrl');
     const fixture = TestBed.createComponent(RegisterComponent);
@@ -154,16 +155,19 @@ describe('RegisterComponent', () => {
     userService.register.and.returnValue(of({ id: 1 } as UserModel));
 
     // fill the form
-    const element = fixture.nativeElement as HTMLElement;
+    const element: HTMLElement = fixture.nativeElement;
     const login = element.querySelector('input')!;
     login.value = 'Cédric';
     login.dispatchEvent(new Event('input'));
+
     const password = element.querySelector<HTMLInputElement>('input[type="password"]')!;
     password.value = 'password';
     password.dispatchEvent(new Event('input'));
+
     const confirmPassword = element.querySelectorAll<HTMLInputElement>('input[type="password"]')[1];
     confirmPassword.value = 'password';
     confirmPassword.dispatchEvent(new Event('input'));
+
     const birthYear = element.querySelector<HTMLInputElement>('input[type="number"]')!;
     birthYear.value = '1986';
     birthYear.dispatchEvent(new Event('input'));
@@ -186,16 +190,19 @@ describe('RegisterComponent', () => {
     userService.register.and.callFake(() => throwError(() => new Error('Oops')));
 
     // fill the form
-    const element = fixture.nativeElement as HTMLElement;
+    const element: HTMLElement = fixture.nativeElement;
     const login = element.querySelector('input')!;
     login.value = 'Cédric';
     login.dispatchEvent(new Event('input'));
+
     const password = element.querySelector<HTMLInputElement>('input[type="password"]')!;
     password.value = 'password';
     password.dispatchEvent(new Event('input'));
+
     const confirmPassword = element.querySelectorAll<HTMLInputElement>('input[type="password"]')[1];
     confirmPassword.value = 'password';
     confirmPassword.dispatchEvent(new Event('input'));
+
     const birthYear = element.querySelector<HTMLInputElement>('input[type="number"]')!;
     birthYear.value = '1986';
     birthYear.dispatchEvent(new Event('input'));
@@ -209,10 +216,12 @@ describe('RegisterComponent', () => {
     expect(userService.register).toHaveBeenCalledWith('Cédric', 'password', 1986);
     // and not navigate
     expect(router.navigateByUrl).not.toHaveBeenCalled();
+
     // and display the error message
     const alert = fixture.debugElement.query(By.directive(NgbAlert));
-    expect(alert).withContext('You should display an error message in an NgbAlert if the registration fails').not.toBeNull();
+    expect(alert).withContext('You should display an error message in NgbAlert if the registration fails').not.toBeNull();
     expect((alert.nativeElement as HTMLElement).textContent).toContain('Try again with another login.');
+
     const alertComponent = alert.componentInstance as NgbAlert;
     expect(alertComponent.type).withContext('The alert should be a danger one').toBe('danger');
   });

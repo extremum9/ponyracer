@@ -34,17 +34,19 @@ describe('RaceComponent', () => {
     fixture.detectChanges();
 
     // then we should have the name and ponies displayed in the template
-    const element = fixture.nativeElement as HTMLElement;
+    const element: HTMLElement = fixture.nativeElement;
     const raceName = element.querySelector('h2')!;
-    expect(raceName).withContext('You need an h2 element for the race name').not.toBeNull();
-    expect(raceName.textContent).withContext('The h2 element should contain the race name').toContain('Paris');
+    expect(raceName).withContext('You need an `h2` element for the race name').not.toBeNull();
+    expect(raceName.textContent).withContext('The `h2` element should contain the race name').toContain('Paris');
+
     const startInstant = element.querySelector('p')!;
-    expect(startInstant).withContext('You need an p element for the race start instant').not.toBeNull();
+    expect(startInstant).withContext('You need an `p` element for the race start instant').not.toBeNull();
     expect(startInstant.textContent)
       .withContext('You should use the `fromNow` pipe you created to format the start instant')
       .toContain(formatDistanceToNowStrict(parseISO('2024-02-18T08:02:00'), { addSuffix: true }));
+
     const ponies = fixture.debugElement.queryAll(By.directive(PonyComponent));
-    expect(ponies).withContext('You should use the PonyComponent in your template to display the ponies').not.toBeNull();
-    expect(ponies.length).withContext('You should have five pony components in your template').toBe(5);
+    expect(ponies).withContext('You should use PonyComponent in your template to display the ponies').not.toBeNull();
+    expect(ponies.length).withContext('You should have 5 `PonyComponent` displayed').toBe(5);
   });
 });

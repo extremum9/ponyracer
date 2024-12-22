@@ -57,7 +57,7 @@ describe('LiveComponent', () => {
 
   it('should change the race status once the race is RUNNING', async () => {
     raceService.get.and.returnValue(of({ ...race }));
-    const positions = new Subject<Array<PonyWithPositionModel>>();
+    const positions = new Subject<PonyWithPositionModel[]>();
     raceService.live.and.returnValue(positions);
 
     const harness = await RouterTestingHarness.create();
@@ -78,7 +78,7 @@ describe('LiveComponent', () => {
 
   it('should unsubscribe on destruction', async () => {
     raceService.get.and.returnValue(of({ ...race }));
-    const positions = new Subject<Array<PonyWithPositionModel>>();
+    const positions = new Subject<PonyWithPositionModel[]>();
     raceService.live.and.returnValue(positions);
 
     const harness = await RouterTestingHarness.create();
@@ -101,7 +101,7 @@ describe('LiveComponent', () => {
         ]
       })
     );
-    const positions = new Subject<Array<PonyWithPositionModel>>();
+    const positions = new Subject<PonyWithPositionModel[]>();
     raceService.live.and.returnValue(positions);
 
     const harness = await RouterTestingHarness.create();
@@ -109,15 +109,16 @@ describe('LiveComponent', () => {
 
     const element = harness.routeNativeElement!;
     const title = element.querySelector('h1')!;
-    expect(title).withContext('The template should display an h1 element with the race name inside').not.toBeNull();
-    expect(title.textContent).withContext('The template should display an h1 element with the race name inside').toContain('Lyon');
+    expect(title).withContext('The template should display an `h1` element with the race name inside').not.toBeNull();
+    expect(title.textContent).withContext('The `h1` element should contain the race name').toContain('Lyon');
+
     const liveRace = element.querySelector('#live-race')!;
     expect(liveRace.textContent).toContain('The race will start');
 
     const debugElement = harness.routeDebugElement!;
     const ponyComponents = debugElement.queryAll(By.directive(PonyStubComponent));
-    expect(ponyComponents).withContext('You should display a `PonyComponent` for each pony').not.toBeNull();
-    expect(ponyComponents.length).withContext('You should display a `PonyComponent` for each pony').toBe(3);
+    expect(ponyComponents).withContext('You should display PonyComponent for each pony').not.toBeNull();
+    expect(ponyComponents.length).withContext('You should have 3 PonyComponent displayed').toBe(3);
 
     const sunnySunday = ponyComponents[0].componentInstance as PonyStubComponent;
     expect(sunnySunday.isRunning()).withContext('The ponies should not be running').toBeFalsy();
@@ -135,7 +136,7 @@ describe('LiveComponent', () => {
         ]
       })
     );
-    const positions = new Subject<Array<PonyWithPositionModel>>();
+    const positions = new Subject<PonyWithPositionModel[]>();
     raceService.live.and.returnValue(positions);
 
     const harness = await RouterTestingHarness.create();
@@ -143,8 +144,8 @@ describe('LiveComponent', () => {
 
     const element = harness.routeNativeElement!;
     const title = element.querySelector('h1')!;
-    expect(title).withContext('The template should display an h1 element with the race name inside').not.toBeNull();
-    expect(title.textContent).withContext('The template should display an h1 element with the race name inside').toContain('Lyon');
+    expect(title).withContext('The template should display an `h1` element with the race name inside').not.toBeNull();
+    expect(title.textContent).withContext('The `h1` element should contain the race name').toContain('Lyon');
 
     positions.next([
       { id: 1, name: 'Sunny Sunday', color: 'BLUE', position: 10, boosted: false },
@@ -155,8 +156,8 @@ describe('LiveComponent', () => {
 
     const debugElement = harness.routeDebugElement!;
     const ponyComponents = debugElement.queryAll(By.directive(PonyStubComponent));
-    expect(ponyComponents).withContext('You should display a `PonyComponent` for each pony').not.toBeNull();
-    expect(ponyComponents.length).withContext('You should display a `PonyComponent` for each pony').toBe(3);
+    expect(ponyComponents).withContext('You should display PonyComponent for each pony').not.toBeNull();
+    expect(ponyComponents.length).withContext('You should have 3 PonyComponent displayed').toBe(3);
 
     const sunnySunday = ponyComponents[0].componentInstance as PonyStubComponent;
     expect(sunnySunday.isRunning()).withContext('The ponies should be running').toBeTruthy();
@@ -174,7 +175,7 @@ describe('LiveComponent', () => {
         betPonyId: 1
       })
     );
-    const positions = new Subject<Array<PonyWithPositionModel>>();
+    const positions = new Subject<PonyWithPositionModel[]>();
     raceService.live.and.returnValue(positions);
 
     const harness = await RouterTestingHarness.create();
@@ -182,8 +183,8 @@ describe('LiveComponent', () => {
 
     const element = harness.routeNativeElement!;
     const title = element.querySelector('h1')!;
-    expect(title).withContext('The template should display an h1 element with the race name inside').not.toBeNull();
-    expect(title.textContent).withContext('The template should display an h1 element with the race name inside').toContain('Lyon');
+    expect(title).withContext('The template should display an `h1` element with the race name inside').not.toBeNull();
+    expect(title.textContent).withContext('The `h1` element should contain the race name').toContain('Lyon');
 
     positions.next([
       { id: 1, name: 'Sunny Sunday', color: 'BLUE', position: 101, boosted: false },
@@ -196,11 +197,11 @@ describe('LiveComponent', () => {
     // won the bet!
     const debugElement = harness.routeDebugElement!;
     const ponyComponents = debugElement.queryAll(By.directive(PonyStubComponent));
-    expect(ponyComponents).withContext('You should display a `PonyComponent` for each winner').not.toBeNull();
-    expect(ponyComponents.length).withContext('You should display a `PonyComponent` for each pony').toBe(2);
+    expect(ponyComponents).withContext('You should display PonyComponent for each winner').not.toBeNull();
+    expect(ponyComponents.length).withContext('You should have 2 PonyComponent displayed').toBe(2);
 
     const sunnySunday = ponyComponents[0].componentInstance as PonyStubComponent;
-    expect(sunnySunday.isRunning()).withContext('The ponies should be not running').toBeFalsy();
+    expect(sunnySunday.isRunning()).withContext('The ponies should not be running').toBeFalsy();
 
     expect(element.textContent).toContain('You won your bet!');
   });
@@ -217,7 +218,7 @@ describe('LiveComponent', () => {
         betPonyId: 3
       })
     );
-    const positions = new Subject<Array<PonyWithPositionModel>>();
+    const positions = new Subject<PonyWithPositionModel[]>();
     raceService.live.and.returnValue(positions);
 
     const harness = await RouterTestingHarness.create();
@@ -271,7 +272,7 @@ describe('LiveComponent', () => {
         betPonyId: 1
       })
     );
-    const positions = new Subject<Array<PonyWithPositionModel>>();
+    const positions = new Subject<PonyWithPositionModel[]>();
     raceService.live.and.returnValue(positions);
 
     const harness = await RouterTestingHarness.create();
@@ -279,8 +280,8 @@ describe('LiveComponent', () => {
 
     const element = harness.routeNativeElement!;
     const title = element.querySelector('h1')!;
-    expect(title).withContext('The template should display an h1 element with the race name inside').not.toBeNull();
-    expect(title.textContent).withContext('The template should display an h1 element with the race name inside').toContain('Lyon');
+    expect(title).withContext('The template should display an `h1` element with the race name inside').not.toBeNull();
+    expect(title.textContent).withContext('The h1 element should contain the race name').toContain('Lyon');
 
     positions.error(new Error('oops'));
     harness.detectChanges();
@@ -288,7 +289,7 @@ describe('LiveComponent', () => {
     // an error occurred
     const debugElement = harness.routeDebugElement!;
     const alert = debugElement.query(By.directive(NgbAlert));
-    expect(alert).withContext('You should have an NgbAlert to display the error').not.toBeNull();
+    expect(alert).withContext('You should have NgbAlert to display the error').not.toBeNull();
     expect((alert.nativeElement as HTMLElement).textContent).toContain('A problem occurred during the live.');
     const alertComponent = alert.componentInstance as NgbAlert;
     expect(alertComponent.type).withContext('The alert should be a danger one').toBe('danger');
@@ -296,7 +297,7 @@ describe('LiveComponent', () => {
 
   it('should emit an event with the pony when a pony is clicked', async () => {
     raceService.get.and.returnValue(of({ ...race }));
-    const positions = new Subject<Array<PonyWithPositionModel>>();
+    const positions = new Subject<PonyWithPositionModel[]>();
     raceService.live.and.returnValue(positions);
     const harness = await RouterTestingHarness.create();
     const liveComponent = await harness.navigateByUrl('/races/12/live', LiveComponent);
@@ -312,7 +313,7 @@ describe('LiveComponent', () => {
 
     // when clicking on the first pony
     const ponyComponent = harness.routeDebugElement!.query(By.directive(PonyStubComponent));
-    expect(ponyComponent).withContext('You should display a `PonyComponent` for each pony').not.toBeNull();
+    expect(ponyComponent).withContext('You should display PonyComponent for each pony').not.toBeNull();
     ponyComponent.triggerEventHandler('ponyClicked', {});
 
     // then we should emit the pony on the subject
@@ -322,7 +323,7 @@ describe('LiveComponent', () => {
   it('should buffer clicks over a second and call the boost method', fakeAsync(async () => {
     raceService.get.and.returnValue(of({ ...race, status: 'RUNNING' }));
     raceService.boost.and.returnValue(of(undefined));
-    const positions = new Subject<Array<PonyWithPositionModel>>();
+    const positions = new Subject<PonyWithPositionModel[]>();
     raceService.live.and.returnValue(positions);
 
     const harness = await RouterTestingHarness.create();

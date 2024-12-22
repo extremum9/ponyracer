@@ -16,15 +16,13 @@ class TestComponent {
 }
 
 describe('BirthYearInputComponent', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-  });
+  beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should display the initial value and update it', () => {
     const fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();
 
-    const nativeElement = fixture.nativeElement as HTMLElement;
+    const nativeElement: HTMLElement = fixture.nativeElement;
     const input = nativeElement.querySelector('input')!;
     const formattedYear = nativeElement.querySelector<HTMLDivElement>('.formatted-year')!;
 
@@ -41,7 +39,7 @@ describe('BirthYearInputComponent', () => {
     const fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();
 
-    const nativeElement = fixture.nativeElement as HTMLElement;
+    const nativeElement: HTMLElement = fixture.nativeElement;
     const input = nativeElement.querySelector('input')!;
     const formattedYear = nativeElement.querySelector<HTMLDivElement>('.formatted-year')!;
 
@@ -129,7 +127,7 @@ describe('BirthYearInputComponent', () => {
     const fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();
 
-    const nativeElement = fixture.nativeElement as HTMLElement;
+    const nativeElement: HTMLElement = fixture.nativeElement;
     const input = nativeElement.querySelector('input')!;
 
     expect(input.disabled).toBe(false);
@@ -145,7 +143,7 @@ describe('BirthYearInputComponent', () => {
     const fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();
 
-    const nativeElement = fixture.nativeElement as HTMLElement;
+    const nativeElement: HTMLElement = fixture.nativeElement;
     const input = nativeElement.querySelector('input')!;
 
     const onTouched = spyOn(fixture.componentInstance.form.controls.birthYear, 'markAsTouched');

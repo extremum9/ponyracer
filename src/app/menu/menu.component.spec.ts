@@ -28,7 +28,7 @@ describe('MenuComponent', () => {
 
   it('should toggle the class on click', () => {
     const fixture = TestBed.createComponent(MenuComponent);
-    const element = fixture.nativeElement as HTMLElement;
+    const element: HTMLElement = fixture.nativeElement;
 
     fixture.detectChanges();
 
@@ -54,13 +54,15 @@ describe('MenuComponent', () => {
     fixture.detectChanges();
 
     const links = fixture.debugElement.queryAll(By.directive(RouterLink));
-    expect(links.length).withContext('You should have only one routerLink to the home when the user is not logged').toBe(1);
+    expect(links.length).withContext('You should have only one routerLink to the home when the user is not logged in').toBe(1);
     currentUser.set({ login: 'cedric', money: 2000 } as UserModel);
     fixture.detectChanges();
 
     const linksAfterLogin = fixture.debugElement.queryAll(By.directive(RouterLink));
     expect(linksAfterLogin.length)
-      .withContext('You should have three routerLink: one to the races, one to the home, one to the money history when the user is logged')
+      .withContext(
+        'You should have three routerLink: one to the races, one to the home, one to the money history when the user is logged in'
+      )
       .toBe(3);
   });
 
@@ -72,9 +74,9 @@ describe('MenuComponent', () => {
 
     fixture.detectChanges();
 
-    const element = fixture.nativeElement as HTMLElement;
+    const element: HTMLElement = fixture.nativeElement;
     const info = element.querySelector('#current-user')!;
-    expect(info).withContext('You should have a `span` element with the ID `current-user` to display the user info').not.toBeNull();
+    expect(info).withContext('You should have a `span` element with the id `current-user` to display the user info').not.toBeNull();
     expect(info.textContent).withContext('You should display the name of the user in a `span` element').toContain('cedric');
     expect(info.textContent).withContext('You should display the score of the user in a `span` element').toContain('2,000');
   });
@@ -99,7 +101,7 @@ describe('MenuComponent', () => {
     expect(fixture.componentInstance.user()!.money).withContext('Your component should listen to the `scoreUpdates` observable').toBe(300);
 
     // emulate an error
-    scoreUpdates.error('You should catch potential errors on score updates with a `.catchError()`');
+    scoreUpdates.error('You should catch potential errors on score updates with a `catchError` operator');
     expect(fixture.componentInstance.user()!.money).withContext('Your component should catch error on score updates').toBe(300);
 
     // emulate a score update
@@ -124,9 +126,9 @@ describe('MenuComponent', () => {
     currentUser.set({ login: 'cedric', money: 2000 } as UserModel);
     fixture.detectChanges();
 
-    const element = fixture.nativeElement as HTMLElement;
+    const element: HTMLElement = fixture.nativeElement;
     const logout = element.querySelector<HTMLSpanElement>('span.fa-power-off')!;
-    expect(logout).withContext('You should have a span element with a class `fa-power-off` to log out').not.toBeNull();
+    expect(logout).withContext('You should have a `span` element with a class `fa-power-off` to log out').not.toBeNull();
     logout.click();
 
     fixture.detectChanges();
@@ -139,12 +141,12 @@ describe('MenuComponent', () => {
     fixture.detectChanges();
 
     const langSelect = (fixture.nativeElement as HTMLElement).querySelector<HTMLSelectElement>('select[aria-label=Language]')!;
-    expect(langSelect).withContext('You should have a select element with an aria-label set to Language').not.toBeNull();
+    expect(langSelect).withContext('You should have a select element with aria-label set to Language').not.toBeNull();
 
     expect(langSelect.options.length).toBe(2);
     expect(langSelect.options[1].value).toBe('fr');
     expect(langSelect.options[1].textContent).toBe('fr');
-    expect(langSelect.selectedIndex).withContext('The language of the I18nService should be the one selected').toBe(0);
+    expect(langSelect.selectedIndex).withContext('The language of I18nService should be the one selected').toBe(0);
   });
 
   it('should change the language', () => {

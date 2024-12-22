@@ -10,7 +10,7 @@ import { PonyWithPositionModel } from './models/pony.model';
 
 describe('RaceService', () => {
   let raceService: RaceService;
-  let http: HttpTestingController;
+  let httpController: HttpTestingController;
   const wsService = jasmine.createSpyObj<WsService>('WsService', ['connect']);
 
   beforeEach(() => {
@@ -18,10 +18,10 @@ describe('RaceService', () => {
       providers: [provideHttpClient(), provideHttpClientTesting(), { provide: WsService, useValue: wsService }]
     });
     raceService = TestBed.inject(RaceService);
-    http = TestBed.inject(HttpTestingController);
+    httpController = TestBed.inject(HttpTestingController);
   });
 
-  afterAll(() => http.verify());
+  afterEach(() => httpController.verify());
 
   it('should list races', () => {
     // fake response
@@ -30,7 +30,7 @@ describe('RaceService', () => {
     let actualRaces: Array<RaceModel> = [];
     raceService.list('PENDING').subscribe((races: Array<RaceModel>) => (actualRaces = races));
 
-    http.expectOne(`${environment.baseUrl}/api/races?status=PENDING`).flush(hardcodedRaces);
+    httpController.expectOne(`${environment.baseUrl}/api/races?status=PENDING`).flush(hardcodedRaces);
 
     expect(actualRaces.length).withContext('The `list` method should return an array of RaceModel wrapped in an Observable').not.toBe(0);
     expect(actualRaces).toEqual(hardcodedRaces);
@@ -44,7 +44,7 @@ describe('RaceService', () => {
     let actualRace: RaceModel | undefined;
     raceService.get(raceId).subscribe(fetchedRace => (actualRace = fetchedRace));
 
-    http.expectOne(`${environment.baseUrl}/api/races/${raceId}`).flush(race);
+    httpController.expectOne(`${environment.baseUrl}/api/races/${raceId}`).flush(race);
 
     expect(actualRace).withContext('The observable must emit the race').toBe(race);
   });
@@ -58,7 +58,7 @@ describe('RaceService', () => {
     let called = false;
     raceService.bet(raceId, ponyId).subscribe(() => (called = true));
 
-    const req = http.expectOne({ method: 'POST', url: `${environment.baseUrl}/api/races/${raceId}/bets` });
+    const req = httpController.expectOne({ method: 'POST', url: `${environment.baseUrl}/api/races/${raceId}/bets` });
     expect(req.request.body).toEqual({ ponyId });
     req.flush(race);
 
@@ -71,7 +71,7 @@ describe('RaceService', () => {
     let called = false;
     raceService.cancelBet(raceId).subscribe(() => (called = true));
 
-    http.expectOne({ method: 'DELETE', url: `${environment.baseUrl}/api/races/${raceId}/bets` }).flush(null);
+    httpController.expectOne({ method: 'DELETE', url: `${environment.baseUrl}/api/races/${raceId}/bets` }).flush(null);
 
     expect(called).toBe(true);
   });
@@ -148,7 +148,7 @@ describe('RaceService', () => {
     let called = false;
     raceService.boost(raceId, ponyId).subscribe(() => (called = true));
 
-    const req = http.expectOne({ method: 'POST', url: `${environment.baseUrl}/api/races/${raceId}/boosts` });
+    const req = httpController.expectOne({ method: 'POST', url: `${environment.baseUrl}/api/races/${raceId}/boosts` });
     expect(req.request.body).toEqual({ ponyId });
     req.flush(null);
 

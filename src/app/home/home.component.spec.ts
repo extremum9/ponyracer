@@ -22,7 +22,7 @@ describe('HomeComponent', () => {
 
     it('display the title and quote', () => {
       const fixture = TestBed.createComponent(HomeComponent);
-      const element = fixture.nativeElement as HTMLElement;
+      const element: HTMLElement = fixture.nativeElement;
       fixture.detectChanges();
 
       const title = element.querySelector('h1')!;
@@ -34,12 +34,12 @@ describe('HomeComponent', () => {
 
       const subtitle = element.querySelector('small')!;
       expect(subtitle).withContext('You should have a `small` element to display the subtitle').not.toBeNull();
-      expect(subtitle.textContent).toContain('Always a pleasure to bet on ponies');
+      expect(subtitle.textContent).withContext('The subtitle should have a text').toContain('Always a pleasure to bet on ponies');
     });
 
     it('display a link to go the login and another to register', () => {
       const fixture = TestBed.createComponent(HomeComponent);
-      const element = fixture.nativeElement as HTMLElement;
+      const element: HTMLElement = fixture.nativeElement;
       fixture.detectChanges();
 
       const button = element.querySelector('a[href="/users/login"]')!;
@@ -62,10 +62,10 @@ describe('HomeComponent', () => {
       currentUser.set({ login: 'cedric' } as UserModel);
       fixture.detectChanges();
 
-      const element = fixture.nativeElement as HTMLElement;
+      const element: HTMLElement = fixture.nativeElement;
       const button = element.querySelector('a[href="/races"]')!;
-      expect(button).withContext('The link should lead to the races if the user is logged').not.toBeNull();
-      expect(button.textContent).withContext('The first link should lead to the races if the user is logged').toContain('Races');
+      expect(button).withContext('The link should lead to the races if the user is logged in').not.toBeNull();
+      expect(button.textContent).withContext('The link should have a text').toContain('Races');
     });
   });
 
@@ -74,7 +74,7 @@ describe('HomeComponent', () => {
 
     it('translate the texts', () => {
       const fixture = TestBed.createComponent(HomeComponent);
-      const element = fixture.nativeElement as HTMLElement;
+      const element: HTMLElement = fixture.nativeElement;
       fixture.detectChanges();
 
       const title = element.querySelector('h1')!;

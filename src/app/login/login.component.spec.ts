@@ -28,9 +28,10 @@ describe('LoginComponent', () => {
     fixture.detectChanges();
 
     // then we should have a title
-    const element = fixture.nativeElement as HTMLElement;
-    expect(element.querySelector('h1')).withContext('The template should have a `h1` tag').not.toBeNull();
-    expect(element.querySelector('h1')!.textContent).withContext('The title should be `Log in`').toContain('Log in');
+    const element: HTMLElement = fixture.nativeElement;
+    const title = element.querySelector('h1')!;
+    expect(title).withContext('The template should have an `h1` element').not.toBeNull();
+    expect(title.textContent).withContext('The title should have a text').toContain('Log in');
   });
 
   it('should have a disabled button if the form is incomplete', () => {
@@ -40,7 +41,7 @@ describe('LoginComponent', () => {
     fixture.detectChanges();
 
     // then we should have a disabled button
-    const element = fixture.nativeElement as HTMLElement;
+    const element: HTMLElement = fixture.nativeElement;
     expect(element.querySelector('button')).withContext('The template should have a button').not.toBeNull();
     expect(element.querySelector('button')!.hasAttribute('disabled'))
       .withContext('The button should be disabled if the form is invalid')
@@ -49,14 +50,14 @@ describe('LoginComponent', () => {
 
   it('should be possible to log in if the form is complete', () => {
     const fixture = TestBed.createComponent(LoginComponent);
-
     fixture.detectChanges();
 
-    const element = fixture.nativeElement as HTMLElement;
+    const element: HTMLElement = fixture.nativeElement;
     const loginInput = element.querySelector('input')!;
     expect(loginInput).withContext('You should have an input for the login').not.toBeNull();
     loginInput.value = 'login';
     loginInput.dispatchEvent(new Event('input'));
+
     const passwordInput = element.querySelector<HTMLInputElement>('input[type="password"]')!;
     expect(passwordInput).withContext('You should have an input with the type `password` for the password').not.toBeNull();
     passwordInput.value = 'password';
@@ -78,7 +79,7 @@ describe('LoginComponent', () => {
     fixture.detectChanges();
 
     // then we should have error fields
-    const element = fixture.nativeElement as HTMLElement;
+    const element: HTMLElement = fixture.nativeElement;
     const loginInput = element.querySelector('input')!;
     expect(loginInput).withContext('You should have an input for the login').not.toBeNull();
     loginInput.value = 'login';
@@ -86,6 +87,7 @@ describe('LoginComponent', () => {
     loginInput.value = '';
     loginInput.dispatchEvent(new Event('input'));
     fixture.detectChanges();
+
     const loginError = element.querySelector('div.mb-3 div')!;
     expect(loginError).withContext('You should have an error message if the login field is required and dirty').not.toBeNull();
     expect(loginError.textContent).withContext('The error message for the login field is incorrect').toContain('Login is required');
@@ -101,6 +103,7 @@ describe('LoginComponent', () => {
     passwordInput.value = '';
     passwordInput.dispatchEvent(new Event('input'));
     fixture.detectChanges();
+
     const passwordError = element.querySelector('div.mb-3 div')!;
     expect(passwordError).withContext('You should have an error message if the password field is required and dirty').not.toBeNull();
     expect(passwordError.textContent)
@@ -118,17 +121,18 @@ describe('LoginComponent', () => {
     const subject = new Subject<UserModel>();
     userService.authenticate.and.returnValue(subject);
 
-    const element = fixture.nativeElement as HTMLElement;
+    const element: HTMLElement = fixture.nativeElement;
     const loginInput = element.querySelector('input')!;
     expect(loginInput).withContext('You should have an input for the login').not.toBeNull();
     loginInput.value = 'login';
     loginInput.dispatchEvent(new Event('input'));
+
     const passwordInput = element.querySelector<HTMLInputElement>('input[type="password"]')!;
     expect(passwordInput).withContext('You should have an input with the type `password` for the password').not.toBeNull();
+
     passwordInput.value = 'password';
     passwordInput.dispatchEvent(new Event('input'));
     fixture.detectChanges();
-
     element.querySelector('button')!.click();
 
     // then we should have called the user service method
@@ -149,14 +153,16 @@ describe('LoginComponent', () => {
     const subject = new Subject<UserModel>();
     userService.authenticate.and.returnValue(subject);
 
-    const element = fixture.nativeElement as HTMLElement;
+    const element: HTMLElement = fixture.nativeElement;
     expect(fixture.debugElement.query(By.directive(NgbAlert)))
       .withContext('You should not have an error message before trying to log in')
       .toBeNull();
+
     const loginInput = element.querySelector('input')!;
     expect(loginInput).withContext('You should have an input for the login').not.toBeNull();
     loginInput.value = 'login';
     loginInput.dispatchEvent(new Event('input'));
+
     const passwordInput = element.querySelector<HTMLInputElement>('input[type="password"]')!;
     expect(passwordInput).withContext('You should have an input with the type `password` for the password').not.toBeNull();
     passwordInput.value = 'password';
@@ -174,8 +180,9 @@ describe('LoginComponent', () => {
     expect(router.navigateByUrl).not.toHaveBeenCalled();
 
     const alert = fixture.debugElement.query(By.directive(NgbAlert));
-    expect(alert).withContext('You should have an NgbAlert to display an error message').not.toBeNull();
+    expect(alert).withContext('You should have NgbAlert to display an error message').not.toBeNull();
     expect((alert.nativeElement as HTMLElement).textContent).toContain('Nope, try again');
+
     const alertComponent = alert.componentInstance as NgbAlert;
     expect(alertComponent.type).withContext('The alert should be a danger one').toBe('danger');
   });

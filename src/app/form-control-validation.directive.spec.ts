@@ -34,7 +34,7 @@ describe('FormControlValidationDirective', () => {
     fixture.detectChanges();
 
     const directive = fixture.debugElement.query(By.directive(FormControlValidationDirective));
-    expect(directive).withContext('The directive should be applied to an element with a class form-control').not.toBeNull();
+    expect(directive).withContext('The directive should be applied to an element with a class `form-control`').not.toBeNull();
 
     const lastName = (fixture.nativeElement as HTMLElement).querySelector<HTMLInputElement>('#lastName')!;
     expect(lastName.classList).not.toContain('is-invalid');

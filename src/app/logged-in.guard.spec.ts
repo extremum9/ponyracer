@@ -18,13 +18,13 @@ describe('loggedInGuard', () => {
     });
   });
 
-  it('should allow activation if user is logged in', () => {
+  it('should allow activation if the user is logged in', () => {
     currentUser.set({} as UserModel);
 
     expect(executeGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)).toBe(true);
   });
 
-  it('should forbid activation if user is not logged in, and navigate to home', () => {
+  it('should forbid activation if the user is not logged in, and navigate to home', () => {
     const router = TestBed.inject(Router);
     const urlTree: UrlTree = router.parseUrl('/');
 

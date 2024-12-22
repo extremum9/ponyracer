@@ -9,8 +9,8 @@ import { UserService } from './user.service';
 describe('jwtInterceptor', () => {
   let currentUser: WritableSignal<UserModel | null>;
   let userService: jasmine.SpyObj<UserService>;
-  let http: HttpTestingController;
-  let httpClient: HttpClient;
+  let httpController: HttpTestingController;
+  let http: HttpClient;
 
   beforeEach(() => {
     currentUser = signal(null);
@@ -22,23 +22,23 @@ describe('jwtInterceptor', () => {
         { provide: UserService, useValue: userService }
       ]
     });
-    http = TestBed.inject(HttpTestingController);
-    httpClient = TestBed.inject(HttpClient);
+    httpController = TestBed.inject(HttpTestingController);
+    http = TestBed.inject(HttpClient);
   });
 
-  it('should do nothing if no jwt token', () => {
-    httpClient.get('/api/foo').subscribe();
+  it('should do nothing if there is no jwt token', () => {
+    http.get('/api/foo').subscribe();
 
-    const testRequest = http.expectOne('/api/foo');
+    const testRequest = httpController.expectOne('/api/foo');
     expect(testRequest.request.headers.get('Authorization')).toBe(null);
   });
 
   it('should send a jwt token', () => {
     currentUser.set({ token: 'hello' } as UserModel);
 
-    httpClient.get('/api/foo').subscribe();
+    http.get('/api/foo').subscribe();
 
-    const testRequest = http.expectOne('/api/foo');
+    const testRequest = httpController.expectOne('/api/foo');
     expect(testRequest.request.headers.get('Authorization')).toBe('Bearer hello');
   });
 });

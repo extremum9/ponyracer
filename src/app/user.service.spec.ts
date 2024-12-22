@@ -10,7 +10,7 @@ import { MoneyHistoryModel } from './models/money-history.model';
 
 describe('UserService', () => {
   let userService: UserService;
-  let http: HttpTestingController;
+  let httpController: HttpTestingController;
   const wsService = jasmine.createSpyObj<WsService>('WsService', ['connect']);
   let localStorageGetItem: jasmine.Spy<(key: string) => string | null>;
 
@@ -29,11 +29,11 @@ describe('UserService', () => {
       providers: [provideHttpClient(), provideHttpClientTesting(), { provide: WsService, useValue: wsService }]
     });
     userService = TestBed.inject(UserService);
-    http = TestBed.inject(HttpTestingController);
+    httpController = TestBed.inject(HttpTestingController);
     wsService.connect.and.returnValue(of());
   });
 
-  afterAll(() => http.verify());
+  afterEach(() => httpController.verify());
 
   it('should authenticate and store a user', () => {
     spyOn(Storage.prototype, 'setItem');
@@ -41,7 +41,7 @@ describe('UserService', () => {
     let actualUser: UserModel | undefined;
     userService.authenticate('cedric', 'hello').subscribe(fetchedUser => (actualUser = fetchedUser));
 
-    const req = http.expectOne({ method: 'POST', url: `${environment.baseUrl}/api/users/authentication` });
+    const req = httpController.expectOne({ method: 'POST', url: `${environment.baseUrl}/api/users/authentication` });
     expect(req.request.body).toEqual({ login: 'cedric', password: 'hello' });
     req.flush(user);
 
@@ -56,7 +56,7 @@ describe('UserService', () => {
     let actualUser: UserModel | undefined;
     userService.register(user.login, 'password', 1986).subscribe(fetchedUser => (actualUser = fetchedUser));
 
-    const req = http.expectOne({ method: 'POST', url: `${environment.baseUrl}/api/users` });
+    const req = httpController.expectOne({ method: 'POST', url: `${environment.baseUrl}/api/users` });
     expect(req.request.body).toEqual({ login: user.login, password: 'password', birthYear: 1986 });
     req.flush(user);
 
@@ -85,7 +85,6 @@ describe('UserService', () => {
     expect(userService.currentUser()).toEqual(user);
 
     userService.logout();
-
     expect(userService.currentUser()).toBeNull();
 
     TestBed.flushEffects();
@@ -109,7 +108,7 @@ describe('UserService', () => {
     let actualHistory: Array<MoneyHistoryModel> = [];
     userService.getMoneyHistory().subscribe(history => (actualHistory = history));
 
-    http.expectOne(`${environment.baseUrl}/api/money/history`).flush(expectedHistory);
+    httpController.expectOne(`${environment.baseUrl}/api/money/history`).flush(expectedHistory);
 
     expect(actualHistory).withContext('The observable should emit the money history').not.toBeUndefined();
     expect(actualHistory).toEqual(expectedHistory);

@@ -51,8 +51,8 @@ describe('FinishedRacesComponent', () => {
         { id: 9, name: 'Lima', startInstant: '2024-02-18T08:10:00Z' },
         { id: 10, name: 'Bali', startInstant: '2024-02-18T08:11:00Z' },
         { id: 11, name: 'Berlin', startInstant: '2024-02-18T08:12:00Z' },
-        { id: 12, name: 'Moscow', startInstant: '2024-02-18T08:13:00Z' }
-      ] as Array<RaceModel>)
+        { id: 12, name: 'Kyiv', startInstant: '2024-02-18T08:13:00Z' }
+      ] as RaceModel[])
     );
   });
 
@@ -69,8 +69,10 @@ describe('FinishedRacesComponent', () => {
 
     const pagination = debugElement.query(By.directive(NgbPagination));
     expect(pagination).withContext('You should have a pagination').not.toBeNull();
+
     const pageLinks = element.querySelectorAll('a.page-link');
     expect(pageLinks.length).withContext('You should have 2 pages, as the test uses 12 races').toBe(4);
+
     const activePageLink = element.querySelector<HTMLAnchorElement>('.page-item.active a')!;
     expect(activePageLink.textContent!.trim()).withContext('The active page link should be 1').toBe('1');
   });
@@ -85,6 +87,7 @@ describe('FinishedRacesComponent', () => {
     expect((raceNames[0].componentInstance as RaceStubComponent).raceModel().name)
       .withContext('You should display the second page races')
       .toBe('Berlin');
+
     const activePageLink = element.querySelector<HTMLAnchorElement>('.page-item.active a')!;
     expect(activePageLink.textContent!.trim()).withContext('The active page link should be 2').toBe('2');
   });
@@ -104,11 +107,13 @@ describe('FinishedRacesComponent', () => {
 
     const router = TestBed.inject(Router);
     expect(router.parseUrl(router.url).queryParams['page']).toBe('2');
+
     const raceNames = debugElement.queryAll(By.directive(RaceStubComponent));
     expect(raceNames.length).withContext('You should have 2 `RaceComponent` displayed on the 2nd page, as the test uses 12 races').toBe(2);
     expect((raceNames[0].componentInstance as RaceStubComponent).raceModel().name)
       .withContext('You should display the second page races')
       .toBe('Berlin');
+
     const activePageLink = element.querySelector<HTMLAnchorElement>('.page-item.active a')!;
     expect(activePageLink.textContent!.trim()).withContext('The active page link should be 2').toBe('2');
   });
