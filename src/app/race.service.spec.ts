@@ -46,7 +46,7 @@ describe('RaceService', () => {
 
     httpController.expectOne(`${environment.baseUrl}/api/races/${raceId}`).flush(race);
 
-    expect(actualRace).withContext('The observable must emit the race').toBe(race);
+    expect(actualRace).withContext('The observable should emit the race').toBe(race);
   });
 
   it('should bet on a race', () => {

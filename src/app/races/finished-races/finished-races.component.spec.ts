@@ -123,6 +123,6 @@ describe('FinishedRacesComponent', () => {
     const element = harness.routeNativeElement!;
 
     const raceNames = element.querySelectorAll('a:not(.page-link)');
-    expect(raceNames.length).withContext('You must NOT have a link to go to the bet page for each race').toBe(0);
+    expect(raceNames.length).withContext('You should NOT have a link to go to the bet page for each race').toBe(0);
   });
 });

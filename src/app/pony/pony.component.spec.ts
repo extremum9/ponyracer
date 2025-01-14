@@ -43,7 +43,7 @@ describe('PonyComponent', () => {
     const figure = element.querySelector('figure')!;
     expect(figure).withContext('You should have a `figure` element for the pony').not.toBeNull();
     expect(window.getComputedStyle(figure).getPropertyValue('padding-top'))
-      .withContext('You must apply some styles to the `figure` element')
+      .withContext('You should apply some styles to the `figure` element')
       .toBe('3px');
     figure.click();
 

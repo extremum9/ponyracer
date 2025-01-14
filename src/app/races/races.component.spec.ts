@@ -33,7 +33,7 @@ describe('RacesComponent', () => {
     await harness.navigateByUrl('/races');
 
     const location = TestBed.inject(Location);
-    expect(location.path()).withContext('You should redirect from /races to /races/pending').toBe('/races/pending');
+    expect(location.path()).withContext('You should redirect from `/races` to `/races/pending`').toBe('/races/pending');
   });
 
   it('should show two tabs', async () => {
@@ -46,22 +46,22 @@ describe('RacesComponent', () => {
     expect(tabLinks[1].href).toContain('/races/finished');
   });
 
-  it('should have make first tab active when showing pending races', async () => {
+  it('should make the first tab active when showing pending races', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/races');
 
     const links = harness.routeNativeElement!.querySelectorAll<HTMLAnchorElement>('a.nav-link');
-    expect(links.length).withContext('You must have two links').toBe(2);
+    expect(links.length).withContext('You should have two links').toBe(2);
     expect(links[0].className).withContext('The first link should be active').toContain('active');
     expect(links[1].className).withContext('The second link should not be active').not.toContain('active');
   });
 
-  it('should have make second tab active when showing finished races', async () => {
+  it('should make the second tab active when showing finished races', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/races/finished');
 
     const links = harness.routeNativeElement!.querySelectorAll<HTMLAnchorElement>('a.nav-link');
-    expect(links.length).withContext('You must have two links').toBe(2);
+    expect(links.length).withContext('You should have two links').toBe(2);
     expect(links[0].className).withContext('The first link should not be active').not.toContain('active');
     expect(links[1].className).withContext('The second link should be active').toContain('active');
   });
@@ -71,10 +71,10 @@ describe('RacesComponent', () => {
 
     await harness.navigateByUrl('/races/pending');
     const pendingRacesComponent = harness.routeDebugElement!.query(By.directive(PendingRacesComponent));
-    expect(pendingRacesComponent).withContext('You should have a PendingRacesComponent for the /races/pending route').not.toBeNull();
+    expect(pendingRacesComponent).withContext('You should have PendingRacesComponent for the `/races/pending` route').not.toBeNull();
 
     await harness.navigateByUrl('/races/finished');
     const finishedRacesComponent = harness.routeDebugElement!.query(By.directive(FinishedRacesComponent));
-    expect(finishedRacesComponent).withContext('You should have a FinishedRacesComponent for the /races/finished route').not.toBeNull();
+    expect(finishedRacesComponent).withContext('You should have FinishedRacesComponent for the `/races/finished` route').not.toBeNull();
   });
 });

@@ -51,7 +51,7 @@ describe('BetComponent', () => {
     // then we should have the name and ponies displayed in the template
     const ponies = harness.routeDebugElement!.queryAll(By.directive(PonyComponent));
     expect(ponies).withContext('You should use PonyComponent in your template to display the ponies').not.toBeNull();
-    expect(ponies.length).withContext('You should have five PonyComponent in your template').toBe(5);
+    expect(ponies.length).withContext('You should have five `PonyComponent` in your template').toBe(5);
 
     const element = harness.routeNativeElement!;
     const raceName = element.querySelector('h1')!;

@@ -39,7 +39,7 @@ describe('PendingRacesComponent', () => {
 
     const element: HTMLElement = fixture.nativeElement;
     const raceNames = element.querySelectorAll('a');
-    expect(raceNames.length).withContext('You must have a link to go to the bet page for each race').toBe(2);
+    expect(raceNames.length).withContext('You should have a link to go to the bet page for each race').toBe(2);
     expect(raceNames[0].textContent).toContain('Bet on Lyon');
     expect(raceNames[1].textContent).toContain('Bet on Los Angeles');
   });

@@ -121,7 +121,7 @@ describe('RegisterComponent', () => {
 
     let invalidYearError = element.querySelector('#birth-year-invalid-error')!;
     expect(invalidYearError)
-      .withContext('A div with the id `invalid-year-error` must be displayed if the year is before 1900')
+      .withContext('A div with the id `invalid-year-error` should be displayed if the year is before 1900')
       .not.toBeNull();
     expect(invalidYearError.textContent).toContain('This is not a valid year');
 
@@ -133,7 +133,7 @@ describe('RegisterComponent', () => {
     // then we should have an error
     invalidYearError = element.querySelector('#birth-year-invalid-error')!;
     expect(invalidYearError)
-      .withContext('A div with the id `invalid-year-error` must be displayed if the year is after next year')
+      .withContext('A div with the id `invalid-year-error` should be displayed if the year is after next year')
       .not.toBeNull();
     expect(invalidYearError.textContent).toContain('This is not a valid year');
 
