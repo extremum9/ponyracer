@@ -2,6 +2,16 @@
 
 A fun app where you can bet on pony races. It was built while completing exercises from the **Angular Pro Pack** by [Ninja Squad](https://ninja-squad.com).
 
+## Tech stack
+
+- [Angular 18](https://angular.dev/)
+- [Bootstrap 5](https://getbootstrap.com/) for styling
+- [ng-bootstrap](https://ng-bootstrap.github.io/) for UI components like `alert` and `pagination`
+- [Chart.js](https://www.chartjs.org/) for data visualization
+- [date-fns](https://date-fns.org/) for nice date formatting
+- [webstomp-client](https://www.npmjs.com/package/webstomp-client) for live updates over WebSocket
+- [Transloco](https://jsverse.gitbook.io/transloco/) for multi-language support
+
 ## Get started
 
 ### Requirements
