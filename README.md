@@ -2,6 +2,10 @@
 
 A fun app where you can bet on pony races. It was built while completing exercises from the **Angular Pro Pack** by [Ninja Squad](https://ninja-squad.com).
 
+## Demo
+
+You can check out a live demo [here](https://ng-ponyracer.netlify.app/).
+
 ## Tech stack
 
 - [Angular 18](https://angular.dev/)
