@@ -44,3 +44,25 @@ ng serve
 > If you don't have Angular CLI installed globally, you can still run the project with `npx ng serve`.
 
 Go to http://localhost:4200 in your browser.
+
+## Screenshots
+
+### Home
+
+<img style="margin-bottom: 20px; border-radius: 10px;" src="public/screenshots/home.png" width="600" alt="Home" />
+
+### Races
+
+<img style="margin-bottom: 20px; border-radius: 10px;" src="public/screenshots/races.png" width="600" alt="Races" />
+
+### Race
+
+<img style="margin-bottom: 20px; border-radius: 10px;" src="public/screenshots/race.png" width="600" alt="Race" />
+
+### Live race
+
+<img style="margin-bottom: 20px; border-radius: 10px;" src="public/screenshots/race-live.png" width="600" alt="Live race" />
+
+### Money history
+
+<img style="margin-bottom: 20px; border-radius: 10px;" src="public/screenshots/money-history.png" width="600" alt="Money history" />
