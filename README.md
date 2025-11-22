@@ -10,7 +10,8 @@ You can check out a live demo [here](https://ng-ponyracer.netlify.app/).
 
 - [Angular 18](https://angular.dev/)
 - [Bootstrap 5](https://getbootstrap.com/) for styling
-- [ng-bootstrap](https://ng-bootstrap.github.io/) for UI components like `alert` and `pagination`
+- [Font Awesome](https://fontawesome.com/) for icons (free version)
+- [Ng Bootstrap](https://ng-bootstrap.github.io/) for UI components like `alert` and `pagination`
 - [Chart.js](https://www.chartjs.org/) for data visualization
 - [date-fns](https://date-fns.org/) for nice date formatting
 - [webstomp-client](https://www.npmjs.com/package/webstomp-client) for live updates over WebSocket
@@ -44,6 +45,24 @@ ng serve
 > If you don't have Angular CLI installed globally, you can still run the project with `npx ng serve`.
 
 Go to http://localhost:4200 in your browser.
+
+## Running Tests
+
+### Unit Tests
+
+Run the unit tests using [Karma](https://karma-runner.github.io/latest/index.html):
+
+```bash
+ng test
+```
+
+### End-to-End (E2E) Tests
+
+Run the end-to-end tests using [Cypress](https://www.cypress.io/#create):
+
+```bash
+ng e2e
+```
 
 ## Screenshots
 
